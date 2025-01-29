@@ -44,7 +44,7 @@
                                 <div class="d-flex align-items-center">
                                     <div class="me-4 text-center">
                                         <p class="mb-0 d-card-para-title">ACTIVE USER</p>
-                                        <h2 class="mb-0 d-card-inner-head">{{ $userCount }}</h2>
+                                        <h2 class="mb-0 d-card-inner-head">{{ $is_activeCount }}</h2>
                                     </div>
                                     <div class="d-card-icon">
                                         <img class="dashboard-icon-img" src="{{asset('/assets/images/icons/total-users.svg')}}" alt="User Count">
@@ -54,7 +54,7 @@
                         </div>
                     </div>
                 </div>
-            
+{{--             
                 <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4 col-lg-custom">
                     <div class="card border-0 dashboard-widget-card">
                         <div class="card-body">
@@ -89,7 +89,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
             
         </div>

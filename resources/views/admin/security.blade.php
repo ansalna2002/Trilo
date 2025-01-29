@@ -23,7 +23,7 @@
                 </div>
                 <div class="card-body">
                     {{-- Form Starts --}}
-                    <form action="{{ route('add_security') }}" method="POST">
+                    <form action="#" method="POST">
                         @csrf  
                         <div class="row">
                             <div class="col-lg-12">
@@ -65,7 +65,7 @@
                             <th>ACTION</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    {{-- <tbody>
                         @foreach ($datatable as $table)
                         <tr>
       
@@ -91,7 +91,7 @@
                         
                         </tr>
                       @endforeach
-                    </tbody>
+                    </tbody> --}}
 
                 </table>
 
@@ -100,7 +100,7 @@
     </div>
 </div>
 <!-- Table Row Ends -->
-@foreach ($datatable as $table)
+{{-- @foreach ($datatable as $table)
 <div class="modal fade" id="DeleteModal-{{ $table->id }}" tabindex="-1" aria-labelledby="deleteModalLabel-{{ $table->id }}" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -122,7 +122,7 @@
         </div>
     </div>
 </div>
-@endforeach
+@endforeach --}}
 
 @endsection
 

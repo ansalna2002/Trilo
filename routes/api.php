@@ -71,6 +71,7 @@ Route::middleware('apikey')->group(function () {
     
     // get_selectlanguage
     Route::get('my_languages', [ProfileController::class, 'my_languages']);
+    Route::get('get_user_transaction', [SubscriptionController::class, 'get_user_transaction']);
     
 
   });

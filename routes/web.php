@@ -28,7 +28,7 @@ Route::prefix('admin')->group(function () {
     Route::get('change_password/{email}', [AdminController::class, 'change_password'])->name('change_password');
     Route::post('reset_password_update', [ForgetPasswordController::class, 'reset_password_update'])->name('reset_password_update');
        
-    // Route::middleware(['adminauth'])->group(function () {
+    Route::middleware(['adminauth'])->group(function () {
         //dashboard
         Route::get('dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
         //logout
@@ -67,7 +67,7 @@ Route::prefix('admin')->group(function () {
 
     });
 
-// });
+});
 
 
 

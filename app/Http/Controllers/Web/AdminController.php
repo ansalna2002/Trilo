@@ -55,7 +55,10 @@ class AdminController extends Controller
     public function dashboard()
     {
         $userCount = User::where('role', 'user')->count();
-        return view('admin.dashboard',compact('userCount'));
+        $is_activeCount = User::where('is_active', '1')
+        ->where('role', 'user')
+        ->count();
+        return view('admin.dashboard',compact('userCount','is_activeCount'));
     }
     public function profile()
     {

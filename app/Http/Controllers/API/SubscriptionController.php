@@ -97,11 +97,11 @@ class SubscriptionController extends Controller
             }
 
             $transaction                 = new Transaction();
-            $transaction->user_id        = $user->id;
+            $transaction->user_id        = $user->user_id;
             $transaction->name           = $user->name;
             $transaction->number         = $user->phone_number;
             $transaction->plan_id        = $request->plan_id;
-            $transaction->amount         = $request->amount;
+            $transaction->amount         = $plan->amount;
             $transaction->transaction_id = $request->transaction_id;
             $transaction->status         = '1';                       
             $transaction->save();
@@ -142,6 +142,76 @@ class SubscriptionController extends Controller
             ], 500);
         }
     }
-
+    public function get_user_transaction(Request $request)
+    {
+        try {
+            // Authenticate the user
+            $user = auth()->guard('sanctum')->user();
+            if (!$user) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'You are not logged in!',
+                    'code' => 401,
+                ], 401);
+            }
+    
+            // Retrieve all transactions for the user
+            $transactions = Transaction::where('user_id', $user->id)
+                ->orderBy('created_at', 'desc') // Order by most recent first
+                ->get();
+    
+            // Retrieve the most recent active subscription
+            $subscription = PlanSubscription::where('user_id', $user->id)
+                ->where('status', '1') // Active subscriptions
+                ->latest()
+                ->first();
+    
+            // Check if subscription exists
+            if (!$subscription) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'No active subscription found for this user.',
+                    'code' => 404,
+                ], 404);
+            }
+    
+            // Check if there are transactions
+            if ($transactions->isEmpty()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'No transactions found for this user.',
+                    'code' => 404,
+                ], 404);
+            }
+    
+            // Prepare the response data
+            $data = $transactions->map(function($transaction) use ($subscription) {
+                return [
+                    'plan_name' => $subscription->plan_name,
+                    'user_id' => $transaction->user_id,
+                    'talk_time' => $subscription->talk_time,
+                    'available_days' => $subscription->available_days,
+                    'amount' => $transaction->amount,
+                    'plan_id' => $subscription->plan_id,
+                    'transaction_id' => $transaction->transaction_id,
+                    'created_date' => $transaction->created_at,
+                ];
+            });
+    
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Transaction details retrieved successfully.',
+                'data' => $data,
+                'code' => 200,
+            ], 200);
+    
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'An error occurred: ' . $e->getMessage(),
+                'code' => 500,
+            ], 500);
+        }
+    }
 
 }

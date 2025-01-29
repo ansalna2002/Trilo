@@ -97,9 +97,20 @@ class User extends Authenticatable
     public function isOnline()
     {
         if ($this->last_login) {
+            $lastLoginTime = Carbon::parse($this->last_login);
             $now = Carbon::now();
-            return $this->last_login->diffInMinutes($now) <= 3;
+            return $lastLoginTime->diffInMinutes($now) <= 3;
         }
         return false;
     }
+    
+
+  
+public function followersCount()
+{
+    return Follow::where('folw_user_id', $this->user_id)
+                 ->where('is_active', 1)
+                 ->count();
+}
+
 }

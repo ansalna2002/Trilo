@@ -344,60 +344,62 @@ class ProfileController extends Controller
             ], 500);
         }
     }
-    public function get_all_users()
-    {
-        try {
-            if (!auth()->guard('sanctum')->check()) {
-                return response()->json([
-                    'status'  => 'error',
-                    'message' => 'Please login!',
-                    'data'    => [],
-                    'code'    => 401,
-                ]);
-            }
-            $currentUserId = auth()->guard('sanctum')->user()->user_id;
-            $users         = User::where('user_id', '!=', $currentUserId)
-            ->where('role', 'user')
-                ->get()
-                ->map(function ($user) use ($currentUserId) {
-                    if ($user->dob) {
-                        try {
-                            $dob = Carbon::createFromFormat('d/m/Y', $user->dob);
-                            $age = $dob->age;
-                            $user->age = $age;
-                        } catch (\Exception $e) {
-                            Log::error("Invalid date format for user {$user->user_id}: " . $user->dob);
-                            $user->age = null;
-                        }
-                    } else {
-                        $user->age = null;
-                    }
-                    $follow = Follow::where('crnt_user_id', $currentUserId)
-                        ->where('folw_user_id', $user->user_id)
-                        ->where('is_active', 1)
-                        ->first();
-                    $user->is_follow = $follow ? true : false;
-                    Log::info("User {$user->user_id} follow status: " . ($user->is_follow ? 'Yes' : 'No'));
-                    $user->is_online = $user->isOnline();
+    // public function get_all_users()
+    // {
+    //     try {
+    //         if (!auth()->guard('sanctum')->check()) {
+    //             return response()->json([
+    //                 'status'  => 'error',
+    //                 'message' => 'Please login!',
+    //                 'data'    => [],
+    //                 'code'    => 401,
+    //             ]);
+    //         }
+    //         $currentUserId = auth()->guard('sanctum')->user()->user_id;
+    //         $users         = User::where('user_id', '!=', $currentUserId)
+    //         ->where('role', 'user')
+    //             ->get()
+    //             ->map(function ($user) use ($currentUserId) {
+    //                 if ($user->dob) {
+    //                     try {
+    //                         $dob = Carbon::createFromFormat('d/m/Y', $user->dob);
+    //                         $age = $dob->age;
+    //                         $user->age = $age;
+    //                     } catch (\Exception $e) {
+    //                         Log::error("Invalid date format for user {$user->user_id}: " . $user->dob);
+    //                         $user->age = null;
+    //                     }
+    //                 } else {
+    //                     $user->age = null;
+    //                 }
+    //                 $follow = Follow::where('crnt_user_id', $currentUserId)
+    //                     ->where('folw_user_id', $user->user_id)
+    //                     ->where('is_active', 1)
+    //                     ->first();
+    //                 $user->is_follow = $follow ? true : false;
+    //                 Log::info("User {$user->user_id} follow status: " . ($user->is_follow ? 'Yes' : 'No'));
+    //                 $user->is_online = $user->isOnline();
+    //                // Get follower count
+    //                 $user->follower_count = $user->followingCount(); 
+
+    //                 return $user;
+    //             });
     
-                    return $user;
-                });
-    
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Fetched all users successfully.',
-                'data' => $users,
-                'code' => 200,
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'An error occurred while fetching the users.',
-                'error' => $e->getMessage(),
-                'code' => 500,
-            ], 500);
-        }
-    }
+    //         return response()->json([
+    //             'status' => 'success',
+    //             'message' => 'Fetched all users successfully.',
+    //             'data' => $users,
+    //             'code' => 200,
+    //         ], 200);
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'status' => 'error',
+    //             'message' => 'An error occurred while fetching the users.',
+    //             'error' => $e->getMessage(),
+    //             'code' => 500,
+    //         ], 500);
+    //     }
+    // }
     public function select_language(Request $request)
     {
         try {
@@ -469,4 +471,65 @@ class ProfileController extends Controller
             ], 500);
         }
     }
+
+    public function get_all_users()
+{
+    try {
+        if (!auth()->guard('sanctum')->check()) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Please login!',
+                'data'    => [],
+                'code'    => 401,
+            ]);
+        }
+
+        $currentUserId = auth()->guard('sanctum')->user()->user_id;
+        $users         = User::where('user_id', '!=', $currentUserId)
+            ->where('role', 'user')
+            ->get()
+            ->map(function ($user) use ($currentUserId) {
+                if ($user->dob) {
+                    try {
+                        $dob = Carbon::createFromFormat('d/m/Y', $user->dob);
+                        $age = $dob->age;
+                        $user->age = $age;
+                    } catch (\Exception $e) {
+                        Log::error("Invalid date format for user {$user->user_id}: " . $user->dob);
+                        $user->age = null;
+                    }
+                } else {
+                    $user->age = null;
+                }
+
+                // Get the follow status
+                $follow = Follow::where('crnt_user_id', $currentUserId)
+                    ->where('folw_user_id', $user->user_id)
+                    ->where('is_active', 1)
+                    ->first();
+                $user->is_follow = $follow ? true : false;
+                Log::info("User {$user->user_id} follow status: " . ($user->is_follow ? 'Yes' : 'No'));
+
+                $user->is_online = $user->isOnline();
+                $user->follower_count = $user->followersCount(); 
+
+                return $user;
+            });
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Fetched all users successfully.',
+            'data' => $users,
+            'code' => 200,
+        ], 200);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'An error occurred while fetching the users.',
+            'error' => $e->getMessage(),
+            'code' => 500,
+        ], 500);
+    }
+}
+
 }

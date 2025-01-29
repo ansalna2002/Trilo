@@ -36,9 +36,9 @@
                             <th>USER ID</th>
                             <th>NAME</th>
                             <th>PHONE NUMBER</th>
-                            <th>SUBSCRIPTION PLAN</th>
-                            <th>STATUS</th>
-                            <th>ACTION</th>
+                            {{-- <th>SUBSCRIPTION PLAN</th> --}}
+                            {{-- <th>STATUS</th> --}}
+                            {{-- <th>ACTION</th> --}}
                         </tr>
                     </thead>
                     <tbody>
@@ -49,12 +49,12 @@
                                 <td>{{ $subscription->user_id }}</td>
                                 <td>{{ $subscription->name }}</td>
                                 <td>{{ $subscription->number }}</td>
-                                <td>{{ $subscription->subscription_plan }}</td>
-                                <td>
+                                {{-- <td>{{ $subscription->subscription_plan }}</td> --}}
+                                {{-- <td>
                                     <span style="color: {{ $subscription->status == 'paid' ? 'green' : 'red' }};">
                                         {{ $subscription->status }}
                                     </span>
-                                </td>
+                                </td> --}}
                               
                                 {{-- <td>
                                     <a href="{{ route('subscriptions.show', $subscription->id) }}" class="btn btn-primary rounded-pill">

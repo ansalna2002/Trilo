@@ -15,7 +15,6 @@ class AuthController extends Controller
    
     public function logout(Request $request)
     {
-
         if (!auth()->guard('sanctum')->check()) {
             return response()->json([
                 'status' => 'error',
@@ -49,9 +48,6 @@ class AuthController extends Controller
             ], 500);
         }
     }
-
-    
-    
     public function login(Request $request)
     {
         try {
@@ -149,18 +145,16 @@ class AuthController extends Controller
                     'errors'  => [],
                 ], 401);
             }
-    
             if ($decryptedOtp == $request->otp) {
                 $user->update([
                     'otp_verified' => 1,
                     'otp'          => null, 
                     'last_login'   => now(),
                 ]);
-    
-                $token = $user->createToken('MyApp')->plainTextToken;
+                $token         = $user->createToken('MyApp')->plainTextToken;
                 $lastLoginTime = $user->last_login;
                 $currentTime   = now();
-                $is_online = $lastLoginTime && $lastLoginTime->diffInMinutes($currentTime) <= 3;
+                $is_online     = $lastLoginTime && $lastLoginTime->diffInMinutes($currentTime) < = 3;
                 return response()->json([
                     'status'  => 'success',
                     'message' => 'OTP verified successfully',
