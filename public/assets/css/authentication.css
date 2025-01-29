@@ -1,0 +1,260 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px #FFF inset !important;
+}
+
+input:-moz-autofill {
+    background-color: #FFF !important;
+}
+
+.logo-widget{
+    /* background:url('../assets/images/login-bg.svg'); */
+    background-size: cover !important;
+}
+
+.widget-logo{
+    height: 100px;
+    border-radius: 10px;
+}
+
+.login-heading, .form-heading{
+   font-family: "Poppins", sans-serif;
+   font-weight:700;
+   font-size:28px;
+   color: var(--Black, rgba(2, 10, 19, 1));
+}
+
+.login-slogan{
+   margin-bottom: 25px !important;
+   color: rgba(179, 180, 186, 1);
+   font-weight:500;
+   font-size:16px;
+   font-family: "Poppins", sans-serif;
+}
+
+.form-slogan{
+    margin-bottom: 25px !important;
+    color: rgba(179, 180, 186, 1);
+    font-weight:400;
+    font-size:14px;
+    font-family: "Poppins", sans-serif;
+ }
+
+.login-container .form-control::placeholder, .forgot-pwd-container .form-control::placeholder, .reset-pwd-container .form-control::placeholder{
+   font-family: "Poppins", sans-serif !important;
+   font-weight:500 !important;
+   color:rgba(2, 10, 19, 1) !important;
+   font-size:16px !important;
+}
+
+login-container .form-control:focus, .forgot-pwd-container .form-control:focus, .reset-pwd-container .form-control:focus{
+   border:none !important;
+}
+
+.form-label{
+   color:#040D12!important;
+   font-weight:400;
+}
+.login-container .form-control, .forgot-pwd-container .form-control, .reset-pwd-container .form-control{
+   color:rgba(2, 10, 19, 1) !important;
+   background-color:#FFF !important;
+   border:none !important;
+   padding: 16px 14px 16px 5px !important;
+   border-top-right-radius:10px !important;
+   border-bottom-right-radius:10px !important;
+   font-size: 16px !important;
+}
+
+.login-container .input-group, .forgot-pwd-container .input-group, .reset-pwd-container .input-group{
+    border-radius: 5px !important;
+    border: 1px solid rgba(2, 40, 89, 1) !important;
+}
+
+.login-container .input-group-text, .forgot-pwd-container .input-group-text, .reset-pwd-container .input-group-text{
+   border-top-left-radius:10px !important;
+   border-bottom-left-radius:10px !important;
+   padding-left: 15px !important;
+   background-color:#FFF !important;
+   border-color:#FFF !important;
+}
+
+.forgot-pwd {
+margin-top: -6px;
+font-family: "Poppins", sans-serif !important;
+font-weight: 500;
+font-size:13px;
+color: rgba(2, 10, 19, 1);
+z-index: 1224355;
+position: relative;
+}
+
+.otp-container{
+display:flex;
+justify-content:space-between;
+align-items:center;
+position:relative;
+border-bottom: 1px solid rgba(179, 180, 186, 1);
+transition: border-color 0.3s ease !important;
+}
+
+.otp-container input:focus {
+border-color: #022859 !important;
+}
+
+.otp-container .send-otp-btn, .otp-container .send-otp-btn:hover, .otp-container .send-otp-btn:active{
+    padding: 4px 10px !important;
+    position:absolute;
+    top: 10px;
+    background-color:#022859 !important;
+    border-color:#022859 !important;
+    color:#FFF !important;
+    font-weight:600 !important;
+    font-size:18px !important;
+    border-radius:5px !important;
+}
+
+
+.form-control.send_otp::placeholder, #send_otp::placeholder{
+    font-weight:500 !important;
+    font-size:16px !important;
+    color: rgba(44, 44, 44, 1) !important;
+}
+
+.form-control.send_otp, #send_otp{
+font-weight: 700 !important;
+color: #022859 !important;
+padding-bottom: 14px !important;
+padding-left: 32%;
+background-color:transparent !important;
+}
+
+@media screen and (min-width:576px) and (max-width:800px){
+    .form-control.send_otp, #send_otp{
+        padding-left: 47% !important;
+    }
+}
+
+@media screen and (min-width:801px){
+    .form-control.send_otp, #send_otp{
+        padding-left: 32% !important;
+    }
+}
+
+@media screen and (min-width:400px) and (max-width:575px){
+    .form-control.send_otp, #send_otp{
+        padding-left: 32% !important;
+    }
+}
+
+@media screen and (max-width:399px){
+    .form-control.send_otp, #send_otp {
+        padding-left: 40% !important;
+    }
+}
+
+.login-btn-container{
+margin-top:33px;
+}
+
+.login-btn, .login-btn:hover, .login-btn:active, .auth-submit-btn, .auth-submit-btn:hover, .auth-submit-btn:active{
+   font-weight:600 !important;
+   font-size:16px;
+   padding: 14px 10px;
+   border-radius: 5px;
+   color:#FFF !important;
+   border-color: #138FA6 !important;
+   background-color: #138FA6 !important;
+}
+
+/* Toggler */
+#toggler, #toggler2,#toggler3, .current-pwd-toggler-icon {
+    cursor: pointer;
+    color:rgba(2, 10, 19, 1) !important;
+    font-size: 14px;
+    position: absolute;
+    z-index: 1546;
+    top: 13px;
+    right: 0;
+    left: 83%;
+}
+
+#toggler .fa-solid.fa-eye, #toggler2 .fa-solid.fa-eye, #toggler3 .fa-solid.fa-eye {
+    color: #138FA6 !important;
+}
+
+
+#pwd-condition {
+    display: block;
+    transition: opacity 2.5s ease;
+    font-weight: 500;
+    font-size: 12px;
+  }
+
+  @keyframes shakee {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+    100% { transform: translateX(0); }
+  }
+  
+  .shake {
+    animation: shakee 0.5s;
+  }
+
+  @keyframes bounce-zoom {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0) scale(1); }
+    40% { transform: translateY(-10px) scale(1.1); }
+    60% { transform: translateY(-5px) scale(1.05); }
+  }
+  
+  .bounce-zoom {
+    animation: bounce-zoom 0.5s;
+  }
+
+/* Toggler */
+
+  .resend-otp-timer{
+        margin-top: 25px;
+        color:#6A798A;
+        font-weight:400;
+        font-size:14px;
+    }
+
+    .resend-otp-timer span{
+        color: #DB4444 !important;
+        font-weight: 500;
+    }
+    
+    @media screen and (max-width:575px){
+        .rightside-widget-col{
+            display:none !important;
+        }
+        .widget-logo{
+            display:block !important;
+        }
+        .page-content{
+            overflow-y: auto !important;
+        }
+    }
+    
+    @media screen and (max-width:700px){
+        .inframe-logo{
+            height:300px !important;
+        }
+    }
+
+    @media screen and (min-width:992px){
+        .form-container{
+            max-width: 62% !important;
+        }
+    }
+
+
+    @media screen and (min-width:992px) and (max-width:1300px){
+        .form-control.send_otp, #send_otp {
+            padding-left: 50% !important;
+        }
+    }
