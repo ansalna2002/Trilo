@@ -20,7 +20,8 @@ Route::middleware('apikey')->group(function () {
   Route::post('login_verify', [AuthController::class, 'login_verify']);
   //get_language
   Route::get('get_language', [ProfileController::class, 'get_language']);
-
+  Route::get('get_voice_prompt', [SubscriptionController::class, 'get_voice_prompt']);
+   
   Route::middleware('userauth')->group(function () {
     //set_profile
     Route::post('set_profile', [ProfileController::class, 'set_profile']);
@@ -54,7 +55,6 @@ Route::middleware('apikey')->group(function () {
     Route::post('delete_message', [MessageController::class, 'delete_message']);
     Route::post('get_messages', [MessageController::class, 'get_messages']);
     Route::post('reply_message', [MessageController::class, 'reply_message']);
-    
     Route::post('mark_message_as_read', [MessageController::class, 'mark_message_as_read']);
     //get_blocked_users
     Route::get('get_blocked_list', [UserController::class, 'get_blocked_list']);
@@ -66,12 +66,14 @@ Route::middleware('apikey')->group(function () {
     Route::post('active_plan', [SubscriptionController::class, 'active_plan']);
     // user_transaction
     Route::post('user_transaction', [SubscriptionController::class, 'user_transaction']);
+    // select_language
     Route::post('select_language', [ProfileController::class, 'select_language']);
     Route::post('edit_language', [ProfileController::class, 'edit_language']);
-    
     // get_selectlanguage
     Route::get('my_languages', [ProfileController::class, 'my_languages']);
     Route::get('get_user_transaction', [SubscriptionController::class, 'get_user_transaction']);
+    // get_usertalktime_amount
+    Route::get('get_usertalktime_amount', [SubscriptionController::class, 'get_usertalktime_amount']);
     
 
   });

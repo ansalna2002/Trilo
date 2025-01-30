@@ -65,7 +65,7 @@
     <div class="row mt-5">
         <div class="col-lg-12">
            <div class="mb-3">
-               <h6 class="table-heading">History</h6>
+               <h6 class="table-heading">Notification History</h6>
            </div>
             <div class="card datatable-card">
                 <div class="card-body">
@@ -87,7 +87,12 @@
                               <td>{{ $notification->description }}</td>
                           
                               <td>
-                                <button type="button" data-bs-toggle="modal" data-bs-target="#DeleteModal-{{ $notification->id }}" class="btn transparent-btn text-danger text-decoration-underline">Delete</button>
+                                {{-- <button type="button" data-bs-toggle="modal" data-bs-target="#DeleteModal-{{ $notification->id }}" class="btn transparent-btn text-danger text-decoration-underline">Delete</button>
+                                --}}
+                                <a href="#" data-bs-toggle="modal" data-bs-toggle="modal" data-bs-target="#DeleteModal-{{ $notification->id }}" class="text-danger">
+                                    🗑️
+                                </a>
+                           
                             </td>
                             </tr>
                           @endforeach

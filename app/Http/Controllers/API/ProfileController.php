@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Follow;
 use App\Models\Language;
+use App\Models\UserLanguage;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
@@ -281,22 +282,7 @@ class ProfileController extends Controller
         'code' => 200,
     ], 200);
     }
-    public function get_language(Request $request)
-    {
-        
-        $languages = Language::all();
-        $languages->transform(function ($language) {
-            $language->image_url = asset('storage/images/' . $language->image);
-            unset($language->image);
-            return $language;
-        });
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Languages retrieved successfully.',
-            'data' => $languages,
-            'code' => 200,
-        ], 200);
-    }
+  
     public function my_languages()
 {
     if (!auth('sanctum')->check()) {
@@ -307,18 +293,40 @@ class ProfileController extends Controller
             'code' => 401,
         ], 401);
     }
-    $user      = auth('sanctum')->user();
-    $languages = explode(',', $user->language);
+
+    $user = auth('sanctum')->user();
+    
+    $userLanguages = UserLanguage::where('user_id', $user->id)->get();
+
+    if ($userLanguages->isEmpty()) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'No languages selected.',
+            'data' => [],
+            'code' => 404,
+        ], 404);
+    }
+
+    // Prepare the languages array to return
+    $languages = [];
+    foreach ($userLanguages as $userLanguage) {
+        $languages[] = [
+            'language_id' => $userLanguage->language_id,
+            'language_name' => $userLanguage->language_name,
+        ];
+    }
+
     return response()->json([
         'status' => 'success',
         'message' => 'User languages retrieved successfully.',
         'data' => [
-            'user_id'   => $user->user_id,
+            'user_id' => $user->user_id,
             'languages' => $languages,
         ],
         'code' => 200,
     ], 200);
-    }
+}
+
     public function show_users_profile(Request $request)
     {
         try {
@@ -344,62 +352,7 @@ class ProfileController extends Controller
             ], 500);
         }
     }
-    // public function get_all_users()
-    // {
-    //     try {
-    //         if (!auth()->guard('sanctum')->check()) {
-    //             return response()->json([
-    //                 'status'  => 'error',
-    //                 'message' => 'Please login!',
-    //                 'data'    => [],
-    //                 'code'    => 401,
-    //             ]);
-    //         }
-    //         $currentUserId = auth()->guard('sanctum')->user()->user_id;
-    //         $users         = User::where('user_id', '!=', $currentUserId)
-    //         ->where('role', 'user')
-    //             ->get()
-    //             ->map(function ($user) use ($currentUserId) {
-    //                 if ($user->dob) {
-    //                     try {
-    //                         $dob = Carbon::createFromFormat('d/m/Y', $user->dob);
-    //                         $age = $dob->age;
-    //                         $user->age = $age;
-    //                     } catch (\Exception $e) {
-    //                         Log::error("Invalid date format for user {$user->user_id}: " . $user->dob);
-    //                         $user->age = null;
-    //                     }
-    //                 } else {
-    //                     $user->age = null;
-    //                 }
-    //                 $follow = Follow::where('crnt_user_id', $currentUserId)
-    //                     ->where('folw_user_id', $user->user_id)
-    //                     ->where('is_active', 1)
-    //                     ->first();
-    //                 $user->is_follow = $follow ? true : false;
-    //                 Log::info("User {$user->user_id} follow status: " . ($user->is_follow ? 'Yes' : 'No'));
-    //                 $user->is_online = $user->isOnline();
-    //                // Get follower count
-    //                 $user->follower_count = $user->followingCount(); 
-
-    //                 return $user;
-    //             });
-    
-    //         return response()->json([
-    //             'status' => 'success',
-    //             'message' => 'Fetched all users successfully.',
-    //             'data' => $users,
-    //             'code' => 200,
-    //         ], 200);
-    //     } catch (\Exception $e) {
-    //         return response()->json([
-    //             'status' => 'error',
-    //             'message' => 'An error occurred while fetching the users.',
-    //             'error' => $e->getMessage(),
-    //             'code' => 500,
-    //         ], 500);
-    //     }
-    // }
+  
     public function select_language(Request $request)
     {
         try {
@@ -413,8 +366,10 @@ class ProfileController extends Controller
             }
     
             $user = auth('sanctum')->user();
+          $userId=$user->user_id;
             $validator = Validator::make($request->all(), [
-                'language_name' => 'required', 
+                'language_id.*' => 'exists:languages,id|required',
+                'language_name.*' => 'required|string',
             ]);
     
             if ($validator->fails()) {
@@ -426,18 +381,6 @@ class ProfileController extends Controller
                 ], 422);
             }
     
-            $selectedLanguages = $request->language_name;
-            if (is_string($selectedLanguages)) {
-                $selectedLanguages = explode(',', $selectedLanguages);
-            }
-            $selectedLanguages = array_map('trim', $selectedLanguages);
-            if (empty($selectedLanguages)) {
-                return response()->json([
-                    'status'  => 'error',
-                    'message' => 'No languages selected.',
-                    'code'    => 400,
-                ], 400);
-            }
             $selectedUser = User::where('user_id', $user->user_id)->first();
             if (!$selectedUser) {
                 return response()->json([
@@ -447,17 +390,30 @@ class ProfileController extends Controller
                     'code'    => 404,
                 ], 404);
             }
-            $existingLanguages      = !empty($selectedUser->language) ? explode(',', $selectedUser->language) : [];
-            $mergedLanguages        = array_unique(array_merge($existingLanguages, $selectedLanguages));
-            $selectedUser->language = implode(',', $mergedLanguages);
-            $selectedUser->save();
+            $languageIds = implode(',', $request->language_id);
+            $languageNames = implode(',', $request->language_name);
+            UserLanguage::create([
+                'user_id' => $selectedUser->id,
+                
+                'language_id' => $languageIds,
+                'language_name' => $languageNames,
+            ]);
+    
+            $selectedLanguages = [];
+            foreach ($request->language_id as $key => $languageId) {
+                $selectedLanguages[] = [
+                    
+                    'language_id' => $languageId,
+                    'language_name' => $request->language_name[$key],
+                ];
+            }
     
             return response()->json([
                 'status'  => 'success',
-                'message' => 'User language updated successfully!',
+                'message' => 'Languages selected successfully',
                 'data'    => [
-                    'user_id'  => $selectedUser->user_id,
-                    'language' => $mergedLanguages, 
+                    'userid'=>  $userId,
+                    'selected_languages' => $selectedLanguages,
                 ],
                 'code'    => 200,
             ], 200);
@@ -465,13 +421,13 @@ class ProfileController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'status'  => 'error',
-                'message' => 'Failed to update language.',
-                'error'   => $e->getMessage(),
+                'message' => 'An error occurred while selecting languages.',
                 'code'    => 500,
+                'errors'  => $e->getMessage(),
             ], 500);
         }
     }
-
+    
     public function get_all_users()
 {
     try {
@@ -531,5 +487,28 @@ class ProfileController extends Controller
         ], 500);
     }
 }
+
+public function get_language(Request $request)
+{
+    $languages = Language::all();
+    $languages->transform(function ($language) {
+        $imagePath = $language->image;
+        if (strpos($imagePath, 'assets/images/banners/') === false) {
+            $imagePath = 'assets/images/banners/' . $imagePath;
+        }
+        $language->image_url = asset($imagePath);  
+        unset($language->image);  
+        return $language;
+    });
+
+    return response()->json([
+        'status'  => 'success',
+        'message' => 'Languages retrieved successfully.',
+        'data'    => $languages,
+        'code'    => 200,
+    ], 200);
+}
+
+
 
 }

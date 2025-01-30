@@ -103,14 +103,40 @@ class User extends Authenticatable
         }
         return false;
     }
-    
+    public static function onlineUsersCount()
+{
+    return self::whereNotNull('last_login')
+               ->where('last_login', '>=', Carbon::now()->subMinutes(3))
+               ->count();
+}
 
-  
+
+  // In App\Models\User.php
+
+public function planSubscription()
+{
+    return $this->hasMany(PlanSubscription::class, 'user_id'); 
+}
+
 public function followersCount()
 {
     return Follow::where('folw_user_id', $this->user_id)
                  ->where('is_active', 1)
                  ->count();
+}
+public static function dailyRegisteredUsers()
+{
+    return self::whereDate('created_at', Carbon::today())->count();
+}
+
+public static function weeklyRegisteredUsers()
+{
+    return self::whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->count();
+}
+
+public static function monthlyRegisteredUsers()
+{
+    return self::whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->count();
 }
 
 }

@@ -36,31 +36,24 @@
                             <th>USER ID</th>
                             <th>NAME</th>
                             <th>PHONE NUMBER</th>
-                            {{-- <th>SUBSCRIPTION PLAN</th> --}}
-                            {{-- <th>STATUS</th> --}}
-                            {{-- <th>ACTION</th> --}}
+                            <th>SUBSCRIPTION PLAN</th>
+                            <th>STATUS</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($subscriptions as $subscription)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $subscription->created_at->format('d-m-Y H:i') }}</td>
+                                <td>{{ $subscription->created_at->format('d-m-Y') }}</td>
                                 <td>{{ $subscription->user_id }}</td>
-                                <td>{{ $subscription->name }}</td>
+                                <td>{{ $subscription->name?? 'N/A' }}</td>
                                 <td>{{ $subscription->number }}</td>
-                                {{-- <td>{{ $subscription->subscription_plan }}</td> --}}
-                                {{-- <td>
-                                    <span style="color: {{ $subscription->status == 'paid' ? 'green' : 'red' }};">
-                                        {{ $subscription->status }}
+                                <td>{{ $subscription->plan_name }} plan</td>
+                                <td>
+                                    <span style="color: {{ $subscription->status == 1 ? 'green' : 'red' }};">
+                                        {{ $subscription->status == 1 ? 'success' : 'failed' }}
                                     </span>
-                                </td> --}}
-                              
-                                {{-- <td>
-                                    <a href="{{ route('subscriptions.show', $subscription->id) }}" class="btn btn-primary rounded-pill">
-                                        <i class="fa-regular fa-eye me-2"></i>View Details
-                                    </a>
-                                </td> --}}
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>

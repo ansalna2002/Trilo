@@ -51,8 +51,9 @@ Route::prefix('admin')->group(function () {
         //user_management
         Route::get('user_management', [AdminController::class, 'user_management'])->name('user_management');
         Route::get('view_user/{id}', [AdminController::class, 'view_user'])->name('view_user');
-      
-       
+        
+        Route::post('add_security', [DashboardController::class, 'add_security'])->name('add_security');
+        
         Route::post('languages_store', [DashboardController::class, 'languages_store'])->name('languages_store');
         Route::post('notification_post', [DashboardController::class, 'notification_post'])->name('notification_post');
         
@@ -61,7 +62,13 @@ Route::prefix('admin')->group(function () {
        
         Route::get('talktime_management', [AdminController::class, 'talktime_management'])->name('talktime_management');
         Route::get('edit_talktime/{id}', [AdminController::class, 'edit_talktime'])->name('edit_talktime');
+        
         Route::get('talktime_delete/{id}', [DashboardController::class, 'talktime_delete'])->name('talktime_delete');
+        Route::get('prompt_delete/{id}', [DashboardController::class, 'prompt_delete'])->name('prompt_delete');
+        
+        // Route to display the edit form and handle the update
+        Route::post('update_prompt/{id}', [DashboardController::class, 'update_prompt'])->name('update_prompt');
+
         Route::post('update_talktime/{id}', [DashboardController::class, 'update_talktime'])->name('update_talktime');
         Route::post('plan_update', [DashboardController::class, 'plan_update'])->name('plan_update');
 

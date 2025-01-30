@@ -22,7 +22,76 @@
             <h3 class="page-top-heading">User Management</h3>
         </div>
     </div>
-
+    <div class="row mb-4">
+        <!-- Total Users -->
+        <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+            <div class="card border-0 dashboard-widget-card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="me-4 text-center">
+                            <p class="mb-0 d-card-para-title">Total onlineUsers</p>
+                            <h2 class="mb-0 d-card-inner-head">{{ $onlineUsers }}</h2>
+                        </div>
+                        {{-- <div class="d-card-icon">
+                            <img class="dashboard-icon-img" src="{{asset('/assets/images/icons/total-users.svg')}}" alt="Total Users">
+                        </div> --}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Daily Users -->
+        <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+            <div class="card border-0 dashboard-widget-card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="me-4 text-center">
+                            <p class="mb-0 d-card-para-title">Daily Users</p>
+                            <h2 class="mb-0 d-card-inner-head">{{ $dailyUsers }}</h2>
+                        </div>
+                        {{-- <div class="d-card-icon">
+                            <img class="dashboard-icon-img" src="{{asset('/assets/images/icons/daily-users.svg')}}" alt="Daily Users">
+                        </div> --}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Weekly Users -->
+        <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+            <div class="card border-0 dashboard-widget-card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="me-4 text-center">
+                            <p class="mb-0 d-card-para-title">Weekly Users</p>
+                            <h2 class="mb-0 d-card-inner-head">{{ $weeklyUsers }}</h2>
+                        </div>
+                        {{-- <div class="d-card-icon">
+                            <img class="dashboard-icon-img" src="{{asset('/assets/images/icons/weekly-users.svg')}}" alt="Weekly Users">
+                        </div> --}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Monthly Users -->
+        <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+            <div class="card border-0 dashboard-widget-card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="me-4 text-center">
+                            <p class="mb-0 d-card-para-title">Monthly Users</p>
+                            <h2 class="mb-0 d-card-inner-head">{{ $monthlyUsers }}</h2>
+                        </div>
+                        {{-- <div class="d-card-icon">
+                            <img class="dashboard-icon-img" src="{{asset('/assets/images/icons/monthly-users.svg')}}" alt="Monthly Users">
+                        </div> --}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
        <!-- Table Row -->
        <div class="row mt-4">
             <div class="col-lg-12">
@@ -52,22 +121,20 @@
                                     </td>
                                     <td>{{ $user->phone_number }}</td>
                                     <td>{{ $user->country }}</td>
-                                    <td>{{ $user->created_at }}</td>
-                                    {{-- <td>
-                                        {{ $user->is_active == 1 ? 'Active' : 'Inactive' }}
-                                    </td> --}}
+                                    <td>{{ \Carbon\Carbon::parse($user->created_at)->toDateString() }}</td>
                                     <td>
                                         <span style="color: {{ $user->is_active == 1 ? 'green' : 'red' }};">
                                             {{ $user->is_active == 1 ? 'Active' : 'Inactive' }}
                                         </span>
                                     </td>
                                     
-                                    
                                     <td>
-                                        <a href="{{ route('view_user', ['id' => $user->id]) }}" type="button" class="btn btn-primary rounded-pill">
-                                            <i class="fa-regular fa-eye me-2"></i>View User details
-                                        </a>
+   <!-- View User with Eye Icon -->
+   <a href="{{ route('view_user', ['id' => $user->id]) }}" class="text-primary me-2">
+    <i class="fa-regular fa-eye"></i> <!-- You can also use the "eye" emoji here if needed -->
+</a>
                                     </td>
+                                    
                                 </tr>
                             @endforeach
                         </tbody>

@@ -154,7 +154,9 @@ class AuthController extends Controller
                 $token         = $user->createToken('MyApp')->plainTextToken;
                 $lastLoginTime = $user->last_login;
                 $currentTime   = now();
-                $is_online     = $lastLoginTime && $lastLoginTime->diffInMinutes($currentTime) < = 3;
+                $is_online     = $lastLoginTime && $lastLoginTime->diffInMinutes($currentTime) <= 3;
+
+              
                 return response()->json([
                     'status'  => 'success',
                     'message' => 'OTP verified successfully',

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Plan;
 use App\Models\PlanSubscription;
+use App\Models\Security;
+use App\Models\SecurityPrompt;
 use App\Models\Transaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -100,6 +102,7 @@ class SubscriptionController extends Controller
             $transaction->user_id        = $user->user_id;
             $transaction->name           = $user->name;
             $transaction->number         = $user->phone_number;
+            $transaction->plan_name       = $request->plan_name;
             $transaction->plan_id        = $request->plan_id;
             $transaction->amount         = $plan->amount;
             $transaction->transaction_id = $request->transaction_id;
@@ -145,7 +148,6 @@ class SubscriptionController extends Controller
     public function get_user_transaction(Request $request)
     {
         try {
-            // Authenticate the user
             $user = auth()->guard('sanctum')->user();
             if (!$user) {
                 return response()->json([
@@ -155,18 +157,15 @@ class SubscriptionController extends Controller
                 ], 401);
             }
     
-            // Retrieve all transactions for the user
             $transactions = Transaction::where('user_id', $user->id)
-                ->orderBy('created_at', 'desc') // Order by most recent first
+                ->orderBy('created_at', 'desc')
                 ->get();
     
-            // Retrieve the most recent active subscription
             $subscription = PlanSubscription::where('user_id', $user->id)
-                ->where('status', '1') // Active subscriptions
+                ->where('status', '1') 
                 ->latest()
                 ->first();
     
-            // Check if subscription exists
             if (!$subscription) {
                 return response()->json([
                     'status' => 'error',
@@ -175,7 +174,6 @@ class SubscriptionController extends Controller
                 ], 404);
             }
     
-            // Check if there are transactions
             if ($transactions->isEmpty()) {
                 return response()->json([
                     'status' => 'error',
@@ -184,7 +182,6 @@ class SubscriptionController extends Controller
                 ], 404);
             }
     
-            // Prepare the response data
             $data = $transactions->map(function($transaction) use ($subscription) {
                 return [
                     'plan_name' => $subscription->plan_name,
@@ -213,5 +210,75 @@ class SubscriptionController extends Controller
             ], 500);
         }
     }
+    public function get_voice_prompt(Request $request)
+    {
+        $voice_prompt = SecurityPrompt::all();
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'voice_prompt retrieved successfully.',
+            'data'    => $voice_prompt,
+            'code'    => 200,
+        ], 200);
+    }
+    public function get_usertalktime_amount(Request $request)
+    {
+        $user = auth()->guard('sanctum')->user();
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'You are not logged in!',
+                'code' => 401,
+            ], 401);
+        }
+    
+        // Check if the user is subscribed (assuming `is_subscribed` is a boolean field)
+        $subscription = $user->planSubscription()->latest()->first(); // Get the latest subscription record for the user
+        
+        if (!$subscription || $subscription->is_subscribed != 1) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User is not subscribed.',
+                'code' => 403,
+            ], 403);
+        }
+    
+        // Check if there are available days left for talktime
+        if ($subscription->available_days <= 0) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No available days left for talktime.',
+                'code' => 400,
+            ], 400);
+        }
+    
+        // Get the most recent transaction with a successful status (1)
+        $latestTransaction = Transaction::where('user_id', $user->user_id)
+                                         ->where('status', '1')
+                                         ->latest() // Gets the most recent transaction
+                                         ->first();
+    
+        // Check if there is a valid transaction
+        if (!$latestTransaction) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No valid transactions found.',
+                'code' => 404,
+            ], 404);
+        }
+    
+        // Get the talktime amount from the latest transaction
+        $talktimeAmount = $latestTransaction->amount;
+    
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Talktime amount details retrieved successfully.',
+            'data'    => [
+                'user_id'         => $user->user_id, 
+                'talktime_amount' => $talktimeAmount,
+            ],
+            'code'    => 200,
+        ], 200);
+    }
+    
 
 }

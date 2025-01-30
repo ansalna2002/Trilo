@@ -19,28 +19,28 @@
         <div class="col-lg-6">
             <div class="card ILY-form-card">
                 <div class="card-header">
-                    <h5 class="card-title">Enter Plan Details</h5>
+                    <h5 class="card-title">Enter Prompt</h5>
                 </div>
                 <div class="card-body">
                     {{-- Form Starts --}}
-                    <form action="#" method="POST">
-                        @csrf  
+                    <form action="{{ route('add_security') }}" method="POST">
+                        @csrf
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="form-group mb-3">
                                     <label for="voice" class="form-label">voice</label>
-                                    <input type="text" name="voice" class="form-control" id="voice" placeholder="Enter voice">
+                                    <input type="text" name="voice" class="form-control" id="voice" placeholder="Enter prompt">
                                     @error('voice')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
-                               
                                 <div class="button-container mt-4">
                                     <button type="submit" class="btn btn-primary submit-btn"><i class="fa-regular fa-circle-check me-2"></i>Submit</button>
                                 </div>
                             </div>
                         </div>
                     </form>
+                    
                     {{-- Form Ends --}}
                 </div>
             </div>
@@ -60,38 +60,28 @@
                     <thead>
                         <tr>
                             <th>S/N</th>
-                            <th>PLAN </th>
-                            <th>STATUS</th>
+                            <th>VOICE PROMPT </th>
                             <th>ACTION</th>
                         </tr>
                     </thead>
-                    {{-- <tbody>
+                    <tbody>
                         @foreach ($datatable as $table)
                         <tr>
-      
                           <td>{{ $loop->iteration }}</td>
-                          <td>{{ $table->plan }}</td>
-                          <td>
-                            <span style="color: {{ $table->status == 1 ? 'green' : 'red' }};">
-                                {{ $table->status == 1 ? 'Active' : 'Inactive' }}
-                            </span>
-                        </td>
+                          <td>{{ $table->prompt_content }}</td>
                         <td>
-                            <!-- Edit Button -->
-                            <a href="{{ route('edit_talktime', ['id' => $table->id]) }}" class="btn btn-primary text-white me-2">
-                                <i class="fa-regular fa-pen-to-square me-2"></i>Edit
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#EditModal-{{ $table->id }}" class="text-primary me-2">
+                                ✏️
                             </a>
-                        
-                           <!-- Delete Button -->
-                           <button type="button" data-bs-toggle="modal" data-bs-target="#DeleteModal-{{ $table->id }}" class="btn btn-danger">
-                            <i class="fa-regular fa-trash-can me-2"></i>Delete
-                        </button>
-
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#DeleteModal-{{ $table->id }}" class="text-danger">
+                                🗑️
+                            </a>
                         </td>
+                        
                         
                         </tr>
                       @endforeach
-                    </tbody> --}}
+                    </tbody>
 
                 </table>
 
@@ -100,7 +90,7 @@
     </div>
 </div>
 <!-- Table Row Ends -->
-{{-- @foreach ($datatable as $table)
+@foreach ($datatable as $table)
 <div class="modal fade" id="DeleteModal-{{ $table->id }}" tabindex="-1" aria-labelledby="deleteModalLabel-{{ $table->id }}" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -115,14 +105,48 @@
             </div>
             <div class="modal-footer d-flex justify-content-center">
                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                <a href="{{ route('talktime_delete', ['id' => $table->id]) }}" class="btn btn-danger">
+                <a href="{{ route('prompt_delete', ['id' => $table->id]) }}" class="btn btn-danger">
                     <i class="fa-regular fa-circle-check me-2"></i>Yes, Delete It!
                 </a>
             </div>
         </div>
     </div>
 </div>
-@endforeach --}}
+@endforeach
+
+@foreach ($datatable as $table)
+<div class="modal fade" id="EditModal-{{ $table->id }}" tabindex="-1" aria-labelledby="EditModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form action="{{ route('update_prompt', ['id' => $table->id]) }}" method="POST">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="EditModalLabel">Edit Talktime</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Hidden ID Field -->
+                    <input type="text" name="id" value="{{ $table->id }}">
+
+                    <div class="form-group">
+                        <label for="voice" class="form-label">Voice</label>
+                        <input type="text" name="voice" id="voice" class="form-control" value="{{ old('voice', $table->voice) }}" required>
+                        @error('voice')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+@endforeach
+
 
 @endsection
 

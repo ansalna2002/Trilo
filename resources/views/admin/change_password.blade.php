@@ -3,7 +3,7 @@
    <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Create Password | Omigaipl</title>
+      <title>Create Password | TRILO</title>
       <link rel="icon" href="{{asset('/assets')}}/images/favicon.ico" type="image/x-icon">
       <!-- Bootstrap CSS -->
       <link rel="stylesheet" type="text/css" href="{{asset('/assets')}}/css/bootstrap/5.3.2/bootstrap.min.css">

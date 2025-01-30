@@ -87,7 +87,12 @@
                                         </td>
                                        
                                         <td>
-                                            <button type="button" data-bs-toggle="modal" data-bs-target="#DeleteModal-{{ $banner->id }}" class="btn transparent-btn text-danger text-decoration-underline">Delete</button>
+                                             <!-- Delete Emoji -->
+                            <a href="#" data-bs-toggle="modal" data-bs-toggle="modal" data-bs-target="#DeleteModal-{{ $banner->id }}" class="text-danger">
+                                🗑️
+                            </a>
+                                            {{-- <button type="button" data-bs-toggle="modal" data-bs-target="#DeleteModal-{{ $banner->id }}" class="btn transparent-btn text-danger text-decoration-underline">Delete</button>
+                                         --}}
                                         </td>
                                     </tr>
                                 @endforeach
@@ -118,7 +123,7 @@
                             <div class="text-center">
                                 <img class="mb-3" src="{{asset('/assets')}}/images/icons/delete-icon.svg">
                                 <p class="my-4 are-you-sure">Are You Sure?</p>
-                                <p class="text-muted my-2 are-you-sure-subtext">Are you sure you want to delete this banner?</p>
+                                <p class="text-muted my-2 are-you-sure-subtext">Are you sure you want to delete this language?</p>
                             </div>
                             <div class="d-flex align-items-center mt-5 mb-3">
                                 <button data-bs-dismiss="modal" class="btn btn-light cancel-btn me-3">Cancel</button>

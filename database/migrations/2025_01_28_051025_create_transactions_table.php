@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('user_id');
             $table->string('number');
             $table->string('plan_id'); 
+            $table->string('plan_name');
             $table->string('transaction_id');
             $table->decimal('amount', 8, 2); 
             $table->boolean('status')->default(0); 

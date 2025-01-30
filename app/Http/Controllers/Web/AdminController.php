@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\Language;
 use App\Models\Plan;
+use App\Models\SecurityPrompt;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Models\Notification;
@@ -22,7 +23,8 @@ class AdminController extends Controller
     }
     public function security()
     {
-        return view('admin.security');
+        $datatable = SecurityPrompt::all();
+        return view('admin.security',compact('datatable'));
     }
     public function transaction()
     {
@@ -32,7 +34,11 @@ class AdminController extends Controller
     public function user_management()
     {
         $users = User::where('role', 'user')->get();
-        return view('admin.user_management',compact('users'));
+        $onlineUsers = User::onlineUsersCount();
+        $dailyUsers = User::dailyRegisteredUsers();
+        $weeklyUsers = User::weeklyRegisteredUsers();
+        $monthlyUsers = User::monthlyRegisteredUsers();
+        return view('admin.user_management',compact('users','onlineUsers','dailyUsers','weeklyUsers','monthlyUsers'));
     }
     public function add_language()
     {
@@ -58,7 +64,11 @@ class AdminController extends Controller
         $is_activeCount = User::where('is_active', '1')
         ->where('role', 'user')
         ->count();
-        return view('admin.dashboard',compact('userCount','is_activeCount'));
+        $onlineUsers = User::onlineUsersCount();
+        $dailyUsers = User::dailyRegisteredUsers();
+        $weeklyUsers = User::weeklyRegisteredUsers();
+        $monthlyUsers = User::monthlyRegisteredUsers();
+        return view('admin.dashboard',compact('userCount','is_activeCount','onlineUsers','dailyUsers','weeklyUsers','monthlyUsers'));
     }
     public function profile()
     {

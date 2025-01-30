@@ -116,7 +116,7 @@
                                 {{ $table->status == 1 ? 'Active' : 'Inactive' }}
                             </span>
                         </td>
-                        <td>
+                        {{-- <td>
                             <!-- Edit Button -->
                             <a href="{{ route('edit_talktime', ['id' => $table->id]) }}" class="btn btn-primary text-white me-2">
                                 <i class="fa-regular fa-pen-to-square me-2"></i>Edit
@@ -127,7 +127,19 @@
                             <i class="fa-regular fa-trash-can me-2"></i>Delete
                         </button>
 
+                        </td> --}}
+                        <td>
+                            <!-- Edit Emoji -->
+                            <a href="{{ route('edit_talktime', ['id' => $table->id]) }}" class="text-primary me-2">
+                                ✏️
+                            </a>
+                        
+                            <!-- Delete Emoji -->
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#DeleteModal-{{ $table->id }}" class="text-danger">
+                                🗑️
+                            </a>
                         </td>
+                        
                         
                         </tr>
                       @endforeach

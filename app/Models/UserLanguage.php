@@ -4,20 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Transaction extends Model
+class UserLanguage extends Model
 {
     protected $fillable = [
-        'name',
         'user_id',
-        'number',
-        'plan_id',
-        'plan_name',
-        'transaction_id',
-        'amount',
-        'status',
+        'language_id',
+        'language_name'
     ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
+    public function language()
+    {
+        return $this->belongsTo(Language::class);
+    }
+
 }

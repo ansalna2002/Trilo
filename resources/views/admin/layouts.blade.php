@@ -104,8 +104,6 @@
                             Notification
                         </a>
                     </li>
-                  
-
                     <li class="sidebar-item">
                         <a href="{{ route('add_language') }}" class="sidebar-link">
                             <img src="{{ asset('/assets') }}/images/icons/sidebar/users-light.svg"
@@ -115,7 +113,6 @@
                             Language
                         </a>
                     </li>
-                  
                     <li class="sidebar-item">
                         <a href="{{ route('talktime_management') }}" class="sidebar-link">
                             <img src="{{ asset('/assets') }}/images/icons/sidebar/reset-password-light.svg"
@@ -125,7 +122,6 @@
                             Talktime Management
                         </a>
                     </li>
-
                     <li class="sidebar-item">
                         <a href="{{ route('transaction') }}" class="sidebar-link">
                             <img src="{{ asset('/assets') }}/images/icons/sidebar/users-light.svg"
@@ -135,7 +131,6 @@
                                 Transaction
                         </a>
                     </li>
-                  
                     <li class="sidebar-item">
                         <a href="{{ route('security') }}" class="sidebar-link">
                             <img src="{{ asset('/assets') }}/images/icons/sidebar/users-light.svg"
@@ -145,8 +140,6 @@
                                 security
                         </a>
                     </li>
-                  
-                  
                     <li class="sidebar-item">
                         <a href="{{ route('reset_password') }}" class="sidebar-link">
                             <img src="{{ asset('/assets') }}/images/icons/sidebar/reset-password-light.svg"
@@ -404,7 +397,7 @@
                                 <script>
                                     document.write(new Date().getFullYear())
                                 </script><span class="px-1">&#169;</span><span
-                                    class="brand-text">OMIGA IPL<span style="color:#04F7FF !important;"></span></span>
+                                    class="brand-text">TRILO<span style="color:#04F7FF !important;"></span></span>
                             </span>
                         </div>
                         <div class="col-lg-6 col-6">

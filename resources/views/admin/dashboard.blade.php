@@ -54,15 +54,15 @@
                         </div>
                     </div>
                 </div>
-{{--             
+           
                 <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4 col-lg-custom">
                     <div class="card border-0 dashboard-widget-card">
                         <div class="card-body">
                             <div class="d-flex align-items-center">
                                 <div class="d-flex align-items-center">
                                     <div class="me-4 text-center">
-                                        <p class="mb-0 d-card-para-title">MATCHES MADE</p>
-                                        <h2 class="mb-0 d-card-inner-head">{{ $userCount }}</h2>
+                                        <p class="mb-0 d-card-para-title">Current Active users</p>
+                                        <h2 class="mb-0 d-card-inner-head">{{ $onlineUsers }}</h2>
                                     </div>
                                     <div class="d-card-icon">
                                         <img class="dashboard-icon-img" src="{{asset('/assets/images/icons/total-users.svg')}}" alt="User Count">
@@ -71,7 +71,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> 
                 
                 <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4 col-lg-custom">
                     <div class="card border-0 dashboard-widget-card">
@@ -79,8 +79,8 @@
                             <div class="d-flex align-items-center">
                                 <div class="d-flex align-items-center">
                                     <div class="me-4 text-center">
-                                        <p class="mb-0 d-card-para-title">MESSAGES SENT</p>
-                                        <h2 class="mb-0 d-card-inner-head">{{ $userCount }}</h2>
+                                        <p class="mb-0 d-card-para-title">Daily user count</p>
+                                        <h2 class="mb-0 d-card-inner-head">{{ $dailyUsers }}</h2>
                                     </div>
                                     <div class="d-card-icon">
                                         <img class="dashboard-icon-img" src="{{asset('/assets/images/icons/total-users.svg')}}" alt="User Count">
@@ -89,18 +89,52 @@
                             </div>
                         </div>
                     </div>
-                </div> --}}
+                </div> 
+
+                <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4 col-lg-custom">
+                    <div class="card border-0 dashboard-widget-card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-4 text-center">
+                                        <p class="mb-0 d-card-para-title">weekly user count</p>
+                                        <h2 class="mb-0 d-card-inner-head">{{ $weeklyUsers }}</h2>
+                                    </div>
+                                    <div class="d-card-icon">
+                                        <img class="dashboard-icon-img" src="{{asset('/assets/images/icons/total-users.svg')}}" alt="User Count">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+
+                <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4 col-lg-custom">
+                    <div class="card border-0 dashboard-widget-card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-4 text-center">
+                                        <p class="mb-0 d-card-para-title">Monthly user count</p>
+                                        <h2 class="mb-0 d-card-inner-head">{{ $monthlyUsers }}</h2>
+                                    </div>
+                                    <div class="d-card-icon">
+                                        <img class="dashboard-icon-img" src="{{asset('/assets/images/icons/total-users.svg')}}" alt="User Count">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
             </div>
             
         </div>
-        <!-- Row Ends.... -->
-
+      
       
 
 
 </div>
-    <!-- container fluid -->
- 
+    
          
 
 
