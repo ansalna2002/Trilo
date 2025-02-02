@@ -110,7 +110,7 @@ class SubscriptionController extends Controller
             $transaction->save();
 
             $subscription                  = new PlanSubscription();
-            $subscription->user_id         = $user->id;
+            $subscription->user_id         = $user->user_id;
             $subscription->plan_id         = $request->plan_id;
             $subscription->plan_name       = $plan->plan;
             $subscription->amount          = $plan->amount;
@@ -157,11 +157,11 @@ class SubscriptionController extends Controller
                 ], 401);
             }
     
-            $transactions = Transaction::where('user_id', $user->id)
+            $transactions = Transaction::where('user_id', $user->user_id)
                 ->orderBy('created_at', 'desc')
                 ->get();
     
-            $subscription = PlanSubscription::where('user_id', $user->id)
+            $subscription = PlanSubscription::where('user_id', $user->user_id)
                 ->where('status', '1') 
                 ->latest()
                 ->first();
@@ -230,10 +230,7 @@ class SubscriptionController extends Controller
                 'code' => 401,
             ], 401);
         }
-    
-        // Check if the user is subscribed (assuming `is_subscribed` is a boolean field)
-        $subscription = $user->planSubscription()->latest()->first(); // Get the latest subscription record for the user
-        
+        $subscription = $user->planSubscription()->latest()->first(); 
         if (!$subscription || $subscription->is_subscribed != 1) {
             return response()->json([
                 'status' => 'error',
@@ -241,8 +238,6 @@ class SubscriptionController extends Controller
                 'code' => 403,
             ], 403);
         }
-    
-        // Check if there are available days left for talktime
         if ($subscription->available_days <= 0) {
             return response()->json([
                 'status' => 'error',
@@ -250,14 +245,10 @@ class SubscriptionController extends Controller
                 'code' => 400,
             ], 400);
         }
-    
-        // Get the most recent transaction with a successful status (1)
         $latestTransaction = Transaction::where('user_id', $user->user_id)
                                          ->where('status', '1')
-                                         ->latest() // Gets the most recent transaction
+                                         ->latest() 
                                          ->first();
-    
-        // Check if there is a valid transaction
         if (!$latestTransaction) {
             return response()->json([
                 'status' => 'error',
@@ -265,10 +256,7 @@ class SubscriptionController extends Controller
                 'code' => 404,
             ], 404);
         }
-    
-        // Get the talktime amount from the latest transaction
         $talktimeAmount = $latestTransaction->amount;
-    
         return response()->json([
             'status'  => 'success',
             'message' => 'Talktime amount details retrieved successfully.',
@@ -280,5 +268,4 @@ class SubscriptionController extends Controller
         ], 200);
     }
     
-
 }

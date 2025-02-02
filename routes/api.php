@@ -74,9 +74,7 @@ Route::middleware('apikey')->group(function () {
     Route::get('get_user_transaction', [SubscriptionController::class, 'get_user_transaction']);
     // get_usertalktime_amount
     Route::get('get_usertalktime_amount', [SubscriptionController::class, 'get_usertalktime_amount']);
-    
-
-  });
+    });
 
 });
 

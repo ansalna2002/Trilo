@@ -32,9 +32,6 @@
                             <p class="mb-0 d-card-para-title">Total onlineUsers</p>
                             <h2 class="mb-0 d-card-inner-head">{{ $onlineUsers }}</h2>
                         </div>
-                        {{-- <div class="d-card-icon">
-                            <img class="dashboard-icon-img" src="{{asset('/assets/images/icons/total-users.svg')}}" alt="Total Users">
-                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -49,9 +46,6 @@
                             <p class="mb-0 d-card-para-title">Daily Users</p>
                             <h2 class="mb-0 d-card-inner-head">{{ $dailyUsers }}</h2>
                         </div>
-                        {{-- <div class="d-card-icon">
-                            <img class="dashboard-icon-img" src="{{asset('/assets/images/icons/daily-users.svg')}}" alt="Daily Users">
-                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -66,9 +60,6 @@
                             <p class="mb-0 d-card-para-title">Weekly Users</p>
                             <h2 class="mb-0 d-card-inner-head">{{ $weeklyUsers }}</h2>
                         </div>
-                        {{-- <div class="d-card-icon">
-                            <img class="dashboard-icon-img" src="{{asset('/assets/images/icons/weekly-users.svg')}}" alt="Weekly Users">
-                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -83,9 +74,6 @@
                             <p class="mb-0 d-card-para-title">Monthly Users</p>
                             <h2 class="mb-0 d-card-inner-head">{{ $monthlyUsers }}</h2>
                         </div>
-                        {{-- <div class="d-card-icon">
-                            <img class="dashboard-icon-img" src="{{asset('/assets/images/icons/monthly-users.svg')}}" alt="Monthly Users">
-                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -129,9 +117,8 @@
                                     </td>
                                     
                                     <td>
-   <!-- View User with Eye Icon -->
    <a href="{{ route('view_user', ['id' => $user->id]) }}" class="text-primary me-2">
-    <i class="fa-regular fa-eye"></i> <!-- You can also use the "eye" emoji here if needed -->
+    <i class="fa-regular fa-eye"></i> 
 </a>
                                     </td>
                                     

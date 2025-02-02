@@ -10,72 +10,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Log;
 class UserController extends Controller
 {
-    public function user_follow(Request $request)
-    {
-
-        if (!auth()->guard('sanctum')->check()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Please login!',
-                'data' => [],
-                'code' => 401,
-            ]);
-        }
-        $user = auth()->guard('sanctum')->user();
-
-        $validator = Validator::make(
-            $request->all(),
-            [
-                'folw_user_id' => 'required|exists:users,user_id',
-            ]
-        );
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $validator->errors()->first(),
-                'code' => 400,
-            ], 400);
-        }
-
-
-        $crnt_user_id = $user->user_id;
-        if ($crnt_user_id == $request->folw_user_id) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'You cannot follow yourself.',
-                'code' => 400,
-            ], 400);
-        }
-
-        $existingFollow = Follow::where('crnt_user_id', $crnt_user_id)
-            ->where('folw_user_id', $request->folw_user_id)
-            ->first();
-
-        if ($existingFollow) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'You are already following this user.',
-                'code' => 400,
-            ], 400);
-        }
-
-        $follow = Follow::create([
-            'crnt_user_id' => $crnt_user_id,
-            'folw_user_id' => $request->folw_user_id,
-            'is_active' => 1,
-        ]);
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'You are now following the user.',
-            'data' => [
-                'user_id' => $crnt_user_id,
-                'follow_data' => $follow,
-            ],
-            'code' => 200,
-        ], 200);
-    }
+   
     public function user_unfollow(Request $request)
     {
         if (!auth()->guard('sanctum')->check()) {
@@ -185,53 +120,7 @@ class UserController extends Controller
             ], 500);
         }
     }
-    public function get_followed_users()
-    {
-        try {
-            if (!auth()->guard('sanctum')->check()) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Please login!',
-                    'data' => [],
-                    'code' => 401,
-                ]);
-            }
-
-            $currentUserId = auth()->guard('sanctum')->user()->user_id;
-            $users = User::where('user_id', '!=', $currentUserId)
-                ->get()
-                ->map(function ($user) use ($currentUserId) {
-                    // Check if the current user follows this user
-                    $follow = Follow::where('crnt_user_id', $currentUserId)
-                        ->where('folw_user_id', $user->user_id)
-                        ->where('is_active', 1)
-                        ->first();
-                    if ($follow) {
-                        $user->is_follow = true;
-                        return $user;
-                    }
-                    return null;
-                })
-                ->filter(function ($user) {
-                    return $user !== null;
-                });
-
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Fetched followed users successfully.',
-                'data' => $users,
-                'code' => 200,
-            ], 200);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'An error occurred while fetching the users.',
-                'error' => $e->getMessage(),
-                'code' => 500,
-            ], 500);
-        }
-    }
+    
     public function delete_my_account($user_id)
     {
         try {
@@ -407,7 +296,113 @@ class UserController extends Controller
     ], 200);
     }
 
-    
+    public function user_follow(Request $request)
+{
+    if (!auth()->guard('sanctum')->check()) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Please login!',
+            'data' => [],
+            'code' => 401,
+        ]);
+    }
+
+    $user = auth()->guard('sanctum')->user();
+
+    $validator = Validator::make(
+        $request->all(),
+        [
+            'folw_user_id' => 'required|exists:users,user_id',
+        ]
+    );
+
+    if ($validator->fails()) {
+        return response()->json([
+            'status' => 'error',
+            'message' => $validator->errors()->first(),
+            'code' => 400,
+        ], 400);
+    }
+
+    $crnt_user_id = $user->user_id;
+
+    if ($crnt_user_id == $request->folw_user_id) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'You cannot follow yourself.',
+            'code' => 400,
+        ], 400);
+    }
+
+    $existingFollow = Follow::where('crnt_user_id', $crnt_user_id)
+                            ->where('folw_user_id', $request->folw_user_id)
+                            ->first();
+
+    if ($existingFollow) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'You are already following this user.',
+            'code' => 400,
+        ], 400);
+    }
+
+    $follow = Follow::create([
+        'crnt_user_id' => $crnt_user_id,
+        'folw_user_id' => $request->folw_user_id,
+        'is_active' => 1,
+    ]);
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'You are now following the user.',
+        'data' => [
+            'user_id' => $crnt_user_id,
+            'follow_data' => $follow,
+        ],
+        'code' => 200,
+    ], 200);
+}
+public function get_followed_users()
+{
+    try {
+        if (!auth()->guard('sanctum')->check()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Please login!',
+                'data' => [],
+                'code' => 401,
+            ]);
+        }
+        $currentUserId = auth()->guard('sanctum')->user()->user_id;
+        $users = User::where('user_id', '!=', $currentUserId) 
+            ->whereIn('user_id', function($query) use ($currentUserId) {
+                $query->select('folw_user_id')
+                      ->from('follows')
+                      ->where('crnt_user_id', $currentUserId)
+                      ->where('is_active', 1); 
+            })
+            ->get()
+            ->map(function ($user) {
+                $user->is_follow = true;
+                return $user;
+            });
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Fetched followed users successfully.',
+            'data' => $users,
+            'code' => 200,
+        ], 200);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'An error occurred while fetching the users.',
+            'error' => $e->getMessage(),
+            'code' => 500,
+        ], 500);
+    }
+}
 
 }
 

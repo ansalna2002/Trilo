@@ -63,7 +63,15 @@
                         <input type="password" name="password_confirmation" id="confirm_pwd" class="form-control" placeholder="Confirm Password" aria-label="Confirm Password" aria-describedby="ConfirmPassword" autocomplete="off" required>
                         <button type="button" id="toggler2" class="btn transparent-btn"><i id="icon2" class="fa-solid fa-eye-slash"></i></button>
                      </div>
-                     <input type="hidden" name="email" value="{{ $email }}"> <!-- Ensure email is properly set in a hidden field or passed through the request -->
+                    
+                     {{-- <input type="text" name="email" value="{{ base64_decode($email) }}"> 
+                     <input type="text" name="otp" value="{{ base64_decode($otp) }}">  --}}
+
+                     <input type="hidden" name="email" value="{{$email}}" required>
+                     <input type="hidden" name="otp" value="{{$otp}}" required>
+                   
+
+
                      <small class="text-danger" id="pwd-condition">Password must have 8 character and include a special character (~`! @#$%^&*-_+={}[]|\;:"<>,./?)</small>
                      <div class="login-btn-container">
                         <button type="submit" class="btn btn-primary auth-submit-btn w-100">

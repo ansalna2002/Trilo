@@ -67,76 +67,19 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    // Define the relationship for users the current user is following
-    public function following()
-    {
-        return $this->hasMany(Follow::class, 'crnt_user_id', 'id');
-    }
-
-    // Define the relationship for users who follow the current user
-    public function followers()
-    {
-        return $this->hasMany(Follow::class, 'folw_user_id', 'id');
-    }
-
-    public function sentMessages()
-    {
-        return $this->hasMany(Message::class, 'sender_id');
-    }
-
-    public function receivedMessages()
-    {
-        return $this->hasMany(Message::class, 'receiver_id');
-    }
-
+   
     public function isAdmin()
     {
-        return $this->role === 'admin'; 
+        return $this->role === 'admin';
     }
-    
-    public function isOnline()
+   
+    public function planSubscription()
     {
-        if ($this->last_login) {
-            $lastLoginTime = Carbon::parse($this->last_login);
-            $now = Carbon::now();
-            return $lastLoginTime->diffInMinutes($now) <= 3;
-        }
-        return false;
+        return $this->hasMany(PlanSubscription::class, 'user_id');
     }
-    public static function onlineUsersCount()
-{
-    return self::whereNotNull('last_login')
-               ->where('last_login', '>=', Carbon::now()->subMinutes(3))
-               ->count();
-}
-
-
-  // In App\Models\User.php
-
-public function planSubscription()
-{
-    return $this->hasMany(PlanSubscription::class, 'user_id'); 
-}
-
-public function followersCount()
-{
-    return Follow::where('folw_user_id', $this->user_id)
-                 ->where('is_active', 1)
-                 ->count();
-}
-public static function dailyRegisteredUsers()
-{
-    return self::whereDate('created_at', Carbon::today())->count();
-}
-
-public static function weeklyRegisteredUsers()
-{
-    return self::whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->count();
-}
-
-public static function monthlyRegisteredUsers()
-{
-    return self::whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->count();
-}
+    public function selectedLanguages()
+    {
+        return $this->hasMany(UserLanguage::class, 'user_id');
+    }
 
 }

@@ -12,7 +12,6 @@ use Illuminate\Support\Str;
 use Laravel\Sanctum\PersonalAccessToken;
 class AuthController extends Controller
 {
-   
     public function logout(Request $request)
     {
         if (!auth()->guard('sanctum')->check()) {
@@ -154,7 +153,7 @@ class AuthController extends Controller
                 $token         = $user->createToken('MyApp')->plainTextToken;
                 $lastLoginTime = $user->last_login;
                 $currentTime   = now();
-                $is_online     = $lastLoginTime && $lastLoginTime->diffInMinutes($currentTime) <= 3;
+                $is_online     = $lastLoginTime && $lastLoginTime->diffInMinutes($currentTime) <= 5;
 
               
                 return response()->json([

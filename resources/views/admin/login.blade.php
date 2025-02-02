@@ -256,130 +256,112 @@
     <script type="text/javascript">
         $(document).ready(function() {
             let countdownInterval;
-
+    
+            // Trigger OTP send button
             $('#sendOtpBtn').on('click', function(event) {
                 event.preventDefault();
-
-
-                $(this).text('Sending OTP...').addClass('disabled').prop('disabled', true);
-
+                const sendOtpBtn = $(this);
+                sendOtpBtn.text('Sending OTP...').addClass('disabled').prop('disabled', true);
+                $('#send_otp_msg').hide();
+    
                 $.ajax({
-                    url: "{{ route('login_sendotp') }}",
+                    url: "{{ route('forget_sendotp') }}",  // Ensure the correct route for sending OTP
                     method: "POST",
                     data: {
                         _token: '{{ csrf_token() }}',
-                        email: $('input[name="email"]').val(),
-                        password: $('#password').val()
+                        email: $('#email').val()
                     },
                     dataType: 'json',
                     success: function(response) {
                         if (response.status === "success") {
-                            $('#send_msg').text('OTP Sent Successfully').css('color', 'green')
-                                .show();
-                            $('#otpInput').show();
-                            $('#resend_otp').hide();
+                            $('#send_otp_msg').text('OTP sent successfully!').css('color', 'green').show();
                             startCountdown(30);
-
-                            $('#sendOtpBtn').text('OTP Sent').prop('disabled', true);
-
-                            setTimeout(() => $('#send_msg').fadeOut(), 3000);
+                            $('#otp-actions').show();
+                            $('#resend_otp').hide();
+    
+                            setTimeout(function() {
+                                $('#send_otp_msg').fadeOut();
+                            }, 3000);
                         } else {
-                            $('#send_msg').text(response.message).css('color', 'red').show();
-                            $('#sendOtpBtn').removeClass('disabled').text('Send OTP').prop(
-                                'disabled', false);
+                            $('#send_otp_msg').text(response.message).css('color', 'red').show();
+                            resetSendOtpButton(sendOtpBtn);
                         }
                     },
-                    error: function(xhr) {
-                        $('#send_msg').text('Error: ' + xhr.statusText).css('color', 'red')
-                            .show();
-                        $('#sendOtpBtn').removeClass('disabled').text('Send OTP').prop(
-                            'disabled', false);
+                    error: function() {
+                        $('#send_otp_msg').text('Error sending OTP. Please try again.').css('color', 'red').show();
+                        resetSendOtpButton(sendOtpBtn);
                     }
                 });
             });
-
-
-
+    
+            // Countdown for OTP resend
             function startCountdown(duration) {
                 clearInterval(countdownInterval);
-                let timer = 60;
-                const countdownElement = $('.countdown-timer');
-
+                let timer = duration;
+                const countdownElement = $('.resend-otp-timer');
+    
                 countdownInterval = setInterval(function() {
-                    countdownElement.text(`${timer} sec`);
-
-                    if (--timer < 0) {
+                    countdownElement.show();
+                    countdownElement.find('span').text(`${timer--} sec`);
+    
+                    if (timer < 0) {
                         clearInterval(countdownInterval);
-                        countdownElement.text('');
+                        countdownElement.hide();
                         $('#resend_otp').show();
-                        $('#sendOtpBtn').text('Send OTP').removeClass('disabled').prop('disabled', false);
                     }
                 }, 1000);
             }
-
+    
+            // Handle OTP resend click
             $('#resend_otp').on('click', function(event) {
                 event.preventDefault();
-                $('#sendOtpBtn').click();
+                $('#sendOtpBtn').click(); // Trigger send OTP again
+                $(this).hide();
             });
-
-            function showOtpInput() {
-                $('#otpInput').show();
-                $('#sendOtpBtn').prop('disabled', true); // Disable Send OTP button once clicked
+    
+            // Reset the Send OTP button after error or success
+            function resetSendOtpButton(button) {
+                button.removeClass('disabled').text('Send OTP').prop('disabled', false);
             }
-
-            $('#loginForm').on('submit', function(event) {
-                event.preventDefault();
-
-                const otp = $('#otpInput').val();
-                const email = $('input[name="email"]').val();
-                const password = $('#password').val();
-
+    
+            // Handle OTP verification on form submission
+            $('#forgot_pswrdpage').on('submit', function(event) {
+                event.preventDefault(); // Prevent the default form submission
+    
+                const otp = $('#send_otp').val(); // Get the OTP entered by the user
+                const email = $('#email').val();  // Get the email address entered by the user
+    
                 if (!otp) {
-                    Swal.fire('Error', 'Please enter OTP.', 'error');
-                    return;
+                    $('#send_otp_msg').text('Please enter OTP.').css('color', 'red').show();
+                    return; // Stop the submission if OTP is not entered
                 }
-
+    
+                // Send the OTP for verification to the server
                 $.ajax({
-                    url: "{{ route('login_verifyotp') }}",
+                    url: "{{ route('forget_verifyotp') }}",  // Ensure the correct route for verifying OTP
                     method: "POST",
                     data: {
                         _token: '{{ csrf_token() }}',
                         otp: otp,
-                        email: email,
-                        password: password
+                        email: email
                     },
                     dataType: 'json',
                     success: function(response) {
-                        if (response.status === 'success') {
-                            window.location.href = response.redirect_url;
+                        if (response.status === "success") {
+                            // OTP verification success, you can proceed to next step (e.g., reset password)
+                            window.location.href = response.redirect_url;  // Redirect to reset password page or any other URL
                         } else {
-                            Swal.fire('Error', response.message, 'error');
+                            $('#send_otp_msg').text(response.message).css('color', 'red').show();
                         }
                     },
-                    error: function(xhr) {
-                        Swal.fire('Error', 'An error occurred. Please try again.', 'error');
+                    error: function() {
+                        $('#send_otp_msg').text('Error verifying OTP. Please try again.').css('color', 'red').show();
                     }
                 });
             });
-
-
-            function togglePassword(passwordFieldId, toggleIconId) {
-                const passwordField = document.getElementById(passwordFieldId);
-                const toggleIcon = document.getElementById(toggleIconId);
-
-                if (passwordField.type === "password") {
-                    passwordField.type = "text";
-                    toggleIcon.classList.remove("fa-eye-slash");
-                    toggleIcon.classList.add("fa-eye");
-                } else {
-                    passwordField.type = "password";
-                    toggleIcon.classList.remove("fa-eye");
-                    toggleIcon.classList.add("fa-eye-slash");
-                }
-            }
-
         });
     </script>
+    
 
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function() {

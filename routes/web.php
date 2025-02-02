@@ -20,12 +20,16 @@ Route::prefix('admin')->group(function () {
     Route::post('login_sendotp', [LoginController::class, 'login_sendotp'])->name('login_sendotp');
     Route::post('login_verifyotp', [LoginController::class, 'login_verifyotp'])->name('login_verifyotp');
 
-
     //forgetpassword
     Route::get('forgot_password', [AdminController::class, 'forgot_password'])->name('forgot_password');
     Route::post('forgot_password', [ForgetPasswordController::class, 'handle'])->name('forgotpassword.handle');
+   
+    Route::post('forget_sendotp', [ForgetPasswordController::class, 'forget_sendotp'])->name('forget_sendotp');
+    Route::post('forget_verifyotp', [ForgetPasswordController::class, 'forget_verifyotp'])->name('forget_verifyotp');
+
+   
     //admin
-    Route::get('change_password/{email}', [AdminController::class, 'change_password'])->name('change_password');
+    Route::get('change_password/{email}/{otp}', [AdminController::class, 'change_password'])->name('change_password');
     Route::post('reset_password_update', [ForgetPasswordController::class, 'reset_password_update'])->name('reset_password_update');
        
     Route::middleware(['adminauth'])->group(function () {

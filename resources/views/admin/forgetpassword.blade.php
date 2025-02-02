@@ -54,7 +54,7 @@
                     </div>
 
                     <!-- Form starts -->
-                    <form id="forgot_pswrdpage" action="{{ route('forgotpassword.handle') }}" method="POST"
+                    <form id="forgot_pswrdpage" action="{{ route('forget_verifyotp') }}" method="POST"
                         autocomplete="off">
                         @csrf
                         <div class="input-group mb-4">
@@ -153,7 +153,7 @@
                 $('#send_otp_msg').hide();
 
                 $.ajax({
-                    url: "{{ route('forgotpassword.handle') }}",
+                    url: "{{ route('forget_sendotp') }}",
                     method: "POST",
                     data: {
                         _token: '{{ csrf_token() }}',
