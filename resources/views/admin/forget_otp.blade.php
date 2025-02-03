@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Forgot Password</title>
+  <title>Verify Code</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
   <style>
     * {
@@ -17,6 +17,16 @@
       display: flex;
       height: 100vh;
     }
+
+    .body {
+  overflow: scroll; /* Allow scrolling */
+  -ms-overflow-style: none;  /* For IE and Edge */
+  scrollbar-width: none; /* For Firefox */
+}
+
+.body::-webkit-scrollbar {
+  display: none; /* For Chrome, Safari, and Opera */
+}
 
     .container {
       display: flex;
@@ -34,7 +44,7 @@
     }
 
     .left-side {
-      background-color: #ffff;
+      background-color:#ffff;
       text-align: left;
     }
 
@@ -55,6 +65,9 @@
       margin-bottom: 20px;
       text-align: left;
     }
+    a {
+      text-decoration: none;
+    }
 
     .form-group {
       position: relative;
@@ -70,7 +83,7 @@
       left: 16px;
       color: #888;
       transition: all 0.2s ease-in-out;
-      background: #fff;
+      background:#ffff;
       padding: 0 5px;
     }
 
@@ -114,11 +127,11 @@
     }
 
     .back-to-login {
-    text-align: left;
-    font-size: 14px;
-    margin-bottom: 15px;
-    width: 100%;
-}
+      text-align: left;
+      font-size: 14px;
+      margin-bottom: 15px;
+      width: 100%;
+    }
 
     .back-to-login a {
       color: #000B58;
@@ -141,14 +154,14 @@
       height: auto;
     }
 
-
+    
     a.text-white {
     color: #fff;
     text-decoration: none;
 }
 
-         /* Toast */
-         .toast {
+  /* Toast */
+  .toast {
       position: fixed;
       top: 50px;
       right: 0;
@@ -167,7 +180,6 @@
       100% { transform: translateX(0); }
    }
   
-
   .success-toast, #success-toast{
      background-color: #55B938 !important;
      color: #fff !important;
@@ -184,13 +196,7 @@
    right: -10px;
    font-size: 10px;
   }
-  
-  @media screen and (min-width:1000px){
-      .toast {
-         top: 16px !important;
-         right: 270px !important;
-   }
-}
+
     /* Responsive styles for mobile devices */
     @media (max-width: 768px) {
       .container {
@@ -218,76 +224,86 @@
     <img src="{{ asset('/assets') }}/images/auth/logo.svg" alt="Logo" class="logo">
     
     <div class="form-container">
-      <div class="back-to-login">
-        <a href="{{ route('admin.login') }}"><< <span>Back to Login</span></a>
-      </div>
-      <h2>Forgot Your Password?</h2>
+      <h2>Verify Code</h2>
       <div class="mb-4" style="margin-bottom:30px;">
-        <p>Don’t worry, happens to all of us. Enter your email below to recover your password.</p>
+        <p>An authentication code has been sent to your email.</p>
       </div>
-      <form method="POST" action="{{ route('forget_sendotp') }}">
+      <form method="POST" action="{{ route('forget_verifyotp') }}">
         @csrf
+        <input type="hidden" name="email" value="{{ request('email') }}"> 
+    
         <div class="form-group">
-        <input type="email" id="email" name="email" placeholder=" " value="{{ old('email') }}" required>
-          <label for="email">Email</label>
+            <input type="text" id="verification_code" name="otp" required class="form-control">
+            <label for="verification_code">Enter Code</label>
         </div>
-        
+    
+        <div class="mb-4" style="margin-bottom:30px;">
+            <p>Didn’t receive a code? 
+              
+              <a href="{{ route('forgot_resend_otp', ['email' => $email]) }}">Resend</a>
+        </div>
         <button type="submit" class="submit-button">Submit</button>
-      </form>
+    </form>
+    
 
 
-      
+
+
     </div>
   </div>
-  <div class="right-side">
+  <div class="right-side" style="padding:0px;">
     <img src="{{ asset('/assets') }}/images/auth/forget.svg" alt="Forgot Password Illustration">
   </div>
 </div>
 
-</body>
 
- <!-- Success Toast -->
- @if(session('success'))
- <div class="toast success-toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="4000">
-  <div class="d-flex justify-content-between align-items-center">
-      <div>
-          <i style="font-size: 20px;" class="fa-regular fa-circle-check"></i>
-      </div>
-      <div class="toast-body text-center">
-          {{ session('success') }}
-      </div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-  </div>
+
+<!-- Success Toast -->
+@if(session('success'))
+<div class="toast success-toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="4000">
+ <div class="d-flex justify-content-between align-items-center">
+     <div>
+         <i style="font-size: 20px;" class="fa-regular fa-circle-check"></i>
+     </div>
+     <div class="toast-body text-center">
+         {{ session('success') }}
+     </div>
+     <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+ </div>
 </div>
 @endif
 <!-- Error Toast -->
 @if(session('error'))
 <div class="toast error-toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="4000">
-  <div class="d-flex justify-content-between align-items-center">
-      <div>
-          <i style="font-size: 20px;" class="fa-solid fa-circle-exclamation"></i>
-      </div>
-      <div class="toast-body text-center">
-          {{ session('error') }}
-      </div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-  </div>
+ <div class="d-flex justify-content-between align-items-center">
+     <div>
+         <i style="font-size: 20px;" class="fa-solid fa-circle-exclamation"></i>
+     </div>
+     <div class="toast-body text-center">
+         {{ session('error') }}
+     </div>
+     <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+ </div>
 </div>
 @endif
 <!-- Script to trigger toasts -->
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
-      @if(session('success'))
-          var successToast = document.querySelector(".success-toast");
-          var bsSuccessToast = new bootstrap.Toast(successToast);
-          bsSuccessToast.show();
-      @endif
+ document.addEventListener("DOMContentLoaded", function() {
+     @if(session('success'))
+         var successToast   = document.querySelector(".success-toast");
+         var bsSuccessToast = new bootstrap.Toast(successToast);
+         bsSuccessToast.show();
+     @endif
 
-      @if(session('error'))
-          var errorToast = document.querySelector(".error-toast");
-          var bsErrorToast = new bootstrap.Toast(errorToast);
-          bsErrorToast.show();
-      @endif
-  });
+     @if(session('error'))
+         var errorToast = document.querySelector(".error-toast");
+         var bsErrorToast = new bootstrap.Toast(errorToast);
+         bsErrorToast.show();
+     @endif
+ });
 </script>
+
+
+
+</body>
 </html>

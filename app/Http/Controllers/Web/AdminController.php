@@ -18,10 +18,8 @@ class AdminController extends Controller
     {
         return view('admin.login');
     }
-    public function forgot_password()
-    {
-        return view('admin.forgetpassword');
-    }
+   
+
     public function security()
     {
         $datatable = SecurityPrompt::all();
@@ -70,10 +68,7 @@ class AdminController extends Controller
     {
         return view('admin.reset_password');
     }
-    public function change_password($email="",$otp="")
-    {
-        return view('admin.change_password', compact('email','otp'));
-    }
+  
 
     public function forget_password_reset($email="",$otp="")
     {

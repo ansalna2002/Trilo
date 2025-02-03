@@ -21,15 +21,15 @@ Route::prefix('admin')->group(function () {
     Route::post('login_verifyotp', [LoginController::class, 'login_verifyotp'])->name('login_verifyotp');
 
     //forgetpassword
-    Route::get('forgot_password', [AdminController::class, 'forgot_password'])->name('forgot_password');
-    Route::post('forgot_password', [ForgetPasswordController::class, 'handle'])->name('forgotpassword.handle');
-   
+    Route::get('forgot_password', [ForgetPasswordController::class, 'forgot_password'])->name('forgot_password');
+    Route::get('forget_otp/{email}', [ForgetPasswordController::class, 'forget_otp'])->name('forget_otp');
     Route::post('forget_sendotp', [ForgetPasswordController::class, 'forget_sendotp'])->name('forget_sendotp');
-    Route::post('forget_verifyotp', [ForgetPasswordController::class, 'forget_verifyotp'])->name('forget_verifyotp');
-
+    
+    Route::get('forgot_resend_otp/{email}', [ForgetPasswordController::class, 'forgot_resend_otp'])->name('forgot_resend_otp');
    
-    //admin
-    Route::get('change_password/{email}/{otp}', [AdminController::class, 'change_password'])->name('change_password');
+   
+    Route::post('forget_verifyotp', [ForgetPasswordController::class, 'forget_verifyotp'])->name('forget_verifyotp');
+    Route::get('change_password/{email}/{otp}', [ForgetPasswordController::class, 'change_password'])->name('change_password');
     Route::post('reset_password_update', [ForgetPasswordController::class, 'reset_password_update'])->name('reset_password_update');
        
     Route::middleware(['adminauth'])->group(function () {
@@ -69,10 +69,7 @@ Route::prefix('admin')->group(function () {
         
         Route::get('talktime_delete/{id}', [DashboardController::class, 'talktime_delete'])->name('talktime_delete');
         Route::get('prompt_delete/{id}', [DashboardController::class, 'prompt_delete'])->name('prompt_delete');
-        
-        // Route to display the edit form and handle the update
         Route::post('update_prompt/{id}', [DashboardController::class, 'update_prompt'])->name('update_prompt');
-
         Route::post('update_talktime/{id}', [DashboardController::class, 'update_talktime'])->name('update_talktime');
         Route::post('plan_update', [DashboardController::class, 'plan_update'])->name('plan_update');
 
