@@ -455,8 +455,6 @@ class ProfileController extends Controller
             'code' => 200,
         ], 200);
     }
-
-
     public function get_all_users()
     {
         try {
@@ -469,10 +467,13 @@ class ProfileController extends Controller
                 ]);
             }
             $currentUserId = auth()->guard('sanctum')->user()->user_id;
-            $users = User::where('user_id', '!=', $currentUserId)
+            $users         = User::where('user_id', '!=', $currentUserId)
                 ->where('role', 'user')
                 ->get()
                 ->map(function ($user) use ($currentUserId) {
+                    $selectedLanguages = UserLanguage::where('user_id', $user->id)
+                        ->pluck('language_name');
+    
                     if ($user->dob) {
                         try {
                             $dob = Carbon::createFromFormat('d/m/Y', $user->dob);
@@ -489,7 +490,6 @@ class ProfileController extends Controller
                         ->where('is_active', 1)
                         ->first();
                     $user->is_follow = $follow ? true : false;
-                    Log::info("User {$user->user_id} follow status: " . ($user->is_follow ? 'Yes' : 'No'));
                     if ($user->last_login) {
                         $lastLoginTime = Carbon::parse($user->last_login);
                         $now = Carbon::now();
@@ -500,20 +500,22 @@ class ProfileController extends Controller
                     $user->follower_count = Follow::where('folw_user_id', $user->user_id)
                         ->where('is_active', 1)
                         ->count();
-
                     if ($user->profile_image) {
                         $user->profile_image_url = url($user->profile_image);
                     }
-
+                    $user->languages = $selectedLanguages->toArray();
                     return $user;
                 });
-
+    
             return response()->json([
                 'status' => 'success',
                 'message' => 'Fetched all users successfully.',
-                'data' => $users,
+                'data' => [
+                    'users' => $users
+                ],
                 'code' => 200,
             ], 200);
+    
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -523,6 +525,6 @@ class ProfileController extends Controller
             ], 500);
         }
     }
-
-
+    
+    
 }

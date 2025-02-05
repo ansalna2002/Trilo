@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 use Laravel\Sanctum\PersonalAccessToken;
 class AuthController extends Controller
 {
+    
     public function logout(Request $request)
     {
         if (!auth()->guard('sanctum')->check()) {
@@ -55,11 +56,11 @@ class AuthController extends Controller
             ]);
             if ($validator->fails()) {
                 return response()->json([
-                    'status' => 'error',
-                    'data' => null,
+                    'status'  => 'error',
+                    'data'    => null,
                     'message' => 'Validation errors',
-                    'code' => 422,
-                    'errors' => $validator->errors(),
+                    'code'    => 422,
+                    'errors'  => $validator->errors(),
                 ], 422);
             }
     
@@ -104,7 +105,6 @@ class AuthController extends Controller
             ], 500);
         }
     }
-    
     public function login_verify(Request $request)
     {
         try {
@@ -150,6 +150,7 @@ class AuthController extends Controller
                     'otp'          => null, 
                     'last_login'   => now(),
                 ]);
+                
                 $token         = $user->createToken('MyApp')->plainTextToken;
                 $lastLoginTime = $user->last_login;
                 $currentTime   = now();
@@ -188,7 +189,7 @@ class AuthController extends Controller
         }
     }
     
-    
+
 }
 
 

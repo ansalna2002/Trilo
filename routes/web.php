@@ -10,7 +10,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-
 Route::prefix('admin')->group(function () {
 
     //login
@@ -24,10 +23,7 @@ Route::prefix('admin')->group(function () {
     Route::get('forgot_password', [ForgetPasswordController::class, 'forgot_password'])->name('forgot_password');
     Route::get('forget_otp/{email}', [ForgetPasswordController::class, 'forget_otp'])->name('forget_otp');
     Route::post('forget_sendotp', [ForgetPasswordController::class, 'forget_sendotp'])->name('forget_sendotp');
-    
     Route::get('forgot_resend_otp/{email}', [ForgetPasswordController::class, 'forgot_resend_otp'])->name('forgot_resend_otp');
-   
-   
     Route::post('forget_verifyotp', [ForgetPasswordController::class, 'forget_verifyotp'])->name('forget_verifyotp');
     Route::get('change_password/{email}/{otp}', [ForgetPasswordController::class, 'change_password'])->name('change_password');
     Route::post('reset_password_update', [ForgetPasswordController::class, 'reset_password_update'])->name('reset_password_update');

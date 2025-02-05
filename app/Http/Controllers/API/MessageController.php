@@ -229,6 +229,7 @@ class MessageController extends Controller
             ], 500);
         }
     }
+   
     public function reply_message(Request $request)
     {
         try {
@@ -258,7 +259,10 @@ class MessageController extends Controller
             $receiver_id = $request->receiver_id;
             $reply_text = $request->reply_message;
             $originalMessage = Message::where('id', $message_id)
-                ->where('receiver_id', $user->user_id)
+                ->where(function ($query) use ($user) {
+                    $query->where('receiver_id', $user->user_id)
+                          ->orWhere('sender_id', $user->user_id);
+                })
                 ->first();
             if (!$originalMessage) {
                 return response()->json([
@@ -270,19 +274,18 @@ class MessageController extends Controller
             }
             $reply = Message::create([
                 'sender_id' => $user->user_id,
-                'receiver_id' => $originalMessage->sender_id,
+                'receiver_id' => $originalMessage->sender_id,  
                 'message' => $reply_text,
                 'is_read' => 0,
                 'is_deleted' => 0,
             ]);
-
             return response()->json([
                 'status' => 'success',
                 'message' => 'Reply sent successfully.',
                 'data' => $reply,
                 'code' => 201,
             ], 201);
-
+    
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -353,7 +356,46 @@ class MessageController extends Controller
             ], 500);
         }
     }
-
+    public function show_all_messages(Request $request)
+    {
+        try {
+            if (!auth()->guard('sanctum')->check()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Please login!',
+                    'data' => [],
+                    'code' => 401,
+                ]);
+            }
+            $user = auth('sanctum')->user();
+            $messages = Message::where('receiver_id', $user->user_id)
+                ->orderBy('created_at', 'asc') 
+                ->get();
+            foreach ($messages as $message) {
+                if ($message->image) {
+                    $message->image_url = $message->image;
+                }
+                if ($message->voice_record) {
+                    $message->voice_url = $message->voice_record;
+                }
+            }
+    
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Messages fetched successfully.',
+                'data' => $messages,
+                'code' => 200,
+            ]);
+    
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to fetch messages.',
+                'error' => $e->getMessage(),
+                'code' => 500,
+            ], 500);
+        }
+    }
 
 }
 

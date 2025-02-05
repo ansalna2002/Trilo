@@ -6,11 +6,30 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Follow;
+use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
 class UserController extends Controller
 {
-   
+    public function notification()
+    {
+        try {
+            $notifications = Notification::all();
+            return response()->json([
+                'status'  => 'success',
+                'data'    => $notifications,
+                'message' => 'Notifications fetched successfully.',
+                'code'    => 200,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Failed to fetch notifications.',
+                'code'    => 500,
+            ], 500);
+        }
+    }
+    
     public function user_unfollow(Request $request)
     {
         if (!auth()->guard('sanctum')->check()) {

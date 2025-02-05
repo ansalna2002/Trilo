@@ -54,6 +54,8 @@ Route::middleware('apikey')->group(function () {
     Route::post('send_message', [MessageController::class, 'send_message']);
     Route::post('delete_message', [MessageController::class, 'delete_message']);
     Route::post('get_messages', [MessageController::class, 'get_messages']);
+    Route::get('show_all_messages', [MessageController::class, 'show_all_messages']);
+    
     Route::post('reply_message', [MessageController::class, 'reply_message']);
     Route::post('mark_message_as_read', [MessageController::class, 'mark_message_as_read']);
     //get_blocked_users
