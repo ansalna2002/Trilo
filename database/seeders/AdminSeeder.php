@@ -15,6 +15,7 @@ class AdminSeeder extends Seeder
     public function run()
     {
         User::create([
+            'email'         => 'ansalnaans2002@gmail.com',
             'phone_number'  => '9999999999',
             'user_id'       => 'ADM001',
             'name'          => 'Admin User',
@@ -29,7 +30,7 @@ class AdminSeeder extends Seeder
             'language'      => 'English',
             'profile_image' => null,
             'password'      => Hash::make('123456'),
-            'email'         => 'ansalnaans2002@gmail.com',
         ]);
+            
     }
 }
