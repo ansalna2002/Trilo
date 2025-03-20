@@ -11,6 +11,7 @@ use App\Models\Transaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class SubscriptionController extends Controller
@@ -21,24 +22,24 @@ class SubscriptionController extends Controller
             $user = auth()->guard('sanctum')->user();
             if (!$user) {
                 return response()->json([
-                    'status' => 'error',
+                    'status'  => 'error',
                     'message' => 'You are not logged in!',
-                    'code' => 401,
+                    'code'    => 401,
                 ]);
             }
             $show_plan = Plan::latest()->get();
             return response()->json([
-                'status' => 'success',
+                'status'  => 'success',
                 'message' => 'show_plan fetched successfully.',
-                'data' => $show_plan,
-                'code' => 200,
+                'data'    => $show_plan,
+                'code'    => 200,
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'status' => 'error',
+                'status'  => 'error',
                 'message' => 'An error occurred while fetching notifications.',
-                'error' => $e->getMessage(),
-                'code' => 500,
+                'error'   => $e->getMessage(),
+                'code'    => 500,
             ]);
         }
     }
@@ -46,10 +47,10 @@ class SubscriptionController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'plan_id' => 'required|exists:plans,id',
-                'amount' => 'required|numeric',
+                'plan_id'        => 'required',
+                'amount'         => 'required|numeric',
                 'transaction_id' => 'required|string',
-                'plan_name' => 'required|string',
+                'coins'          => 'required|string',
             ]);
             if ($validator->fails()) {
                 return response()->json([
@@ -69,18 +70,18 @@ class SubscriptionController extends Controller
             $plan = Plan::find($request->plan_id);
             if (!$plan || $plan->plan !== $request->plan_name) {
                 return response()->json([
-                    'status' => 'error',
+                    'status'  => 'error',
                     'message' => 'Invalid plan name for the provided plan ID.',
-                    'code' => 400,
+                    'code'    => 400,
                 ], 400);
             }
             $existingSubscription = PlanSubscription::where('user_id', $user->id)
-                ->where('plan_id', $request->plan_id)
+                ->where('id', $request->plan_id)
                 ->where('status', '1')
                 ->first();
 
             if ($existingSubscription) {
-                $subscribedDate = Carbon::parse($existingSubscription->subscribed_date);
+                $subscribedDate      = Carbon::parse($existingSubscription->subscribed_date);
                 $subscriptionEndDate = $subscribedDate->addDays($existingSubscription->available_days);
                 if (Carbon::now()->lt($subscriptionEndDate)) {
                     return response()->json([
@@ -93,7 +94,7 @@ class SubscriptionController extends Controller
                     $existingSubscription->is_subscribed = '0';
                     $existingSubscription->save();
 
-                    $user->is_subscriber = 0; 
+                    $user->is_subscriber = 0;
                     $user->save();
                 }
             }
@@ -102,30 +103,25 @@ class SubscriptionController extends Controller
             $transaction->user_id        = $user->user_id;
             $transaction->name           = $user->name;
             $transaction->number         = $user->phone_number;
-            $transaction->plan_name       = $request->plan_name;
-            $transaction->plan_id        = $request->plan_id;
+            $transaction->coins          = $request->coins;
             $transaction->amount         = $plan->amount;
             $transaction->transaction_id = $request->transaction_id;
-            $transaction->status         = '1';                       
+            $transaction->status         = '1';
             $transaction->save();
 
             $subscription                  = new PlanSubscription();
             $subscription->user_id         = $user->user_id;
-            $subscription->plan_id         = $request->plan_id;
-            $subscription->plan_name       = $plan->plan;
+            $subscription->coins           = $request->coins;
             $subscription->amount          = $plan->amount;
-            $subscription->available_days  = $plan->available_days;
             $subscription->subscribed_date = now();
-            $subscription->talk_time       = $plan->talk_time;
-            $subscription->type            = $plan->type;
             $subscription->status          = '1';
             $subscription->is_subscribed   = '1';
-            $subscription->remark          = $request->remark ?? null;
             $subscription->save();
 
-            $user->is_subscriber = 1;
-            $user->type=$plan->type;
-            $user->subscribed_date = now();
+            $user->is_subscriber       = 1;
+            $user->type                = $plan->type;
+            $user->subscribed_date     = now();
+            $user->subscribed_end_date = Carbon::now()->addYear();
             $user->save();
 
             return response()->json([
@@ -149,23 +145,16 @@ class SubscriptionController extends Controller
     {
         try {
             $user = auth()->guard('sanctum')->user();
-            if (!$user) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'You are not logged in!',
-                    'code' => 401,
-                ], 401);
-            }
-    
+
             $transactions = Transaction::where('user_id', $user->user_id)
                 ->orderBy('created_at', 'desc')
                 ->get();
-    
+
             $subscription = PlanSubscription::where('user_id', $user->user_id)
-                ->where('status', '1') 
+                ->where('status', '1')
                 ->latest()
                 ->first();
-    
+
             if (!$subscription) {
                 return response()->json([
                     'status' => 'error',
@@ -173,7 +162,7 @@ class SubscriptionController extends Controller
                     'code' => 404,
                 ], 404);
             }
-    
+
             if ($transactions->isEmpty()) {
                 return response()->json([
                     'status' => 'error',
@@ -181,32 +170,29 @@ class SubscriptionController extends Controller
                     'code' => 404,
                 ], 404);
             }
-    
-            $data = $transactions->map(function($transaction) use ($subscription) {
+
+            $data = $transactions->map(function ($transaction) use ($subscription) {
                 return [
-                    'plan_name' => $subscription->plan_name,
-                    'user_id' => $transaction->user_id,
-                    'talk_time' => $subscription->talk_time,
-                    'available_days' => $subscription->available_days,
-                    'amount' => $transaction->amount,
-                    'plan_id' => $subscription->plan_id,
+                    'user_id'        => $transaction->user_id,
+                    'amount'         => $transaction->amount,
+                    'coins'          => $subscription->coins,
                     'transaction_id' => $transaction->transaction_id,
-                    'created_date' => $transaction->created_at,
+                    'created_date'   => $transaction->created_at,
                 ];
             });
-    
+
             return response()->json([
-                'status' => 'success',
+                'status'  => 'success',
                 'message' => 'Transaction details retrieved successfully.',
-                'data' => $data,
-                'code' => 200,
+                'data'    => $data,
+                'code'    => 200,
             ], 200);
-    
+
         } catch (\Exception $e) {
             return response()->json([
-                'status' => 'error',
+                'status'  => 'error',
                 'message' => 'An error occurred: ' . $e->getMessage(),
-                'code' => 500,
+                'code'    => 500,
             ], 500);
         }
     }
@@ -220,52 +206,7 @@ class SubscriptionController extends Controller
             'code'    => 200,
         ], 200);
     }
-    public function get_usertalktime_amount(Request $request)
-    {
-        $user = auth()->guard('sanctum')->user();
-        if (!$user) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'You are not logged in!',
-                'code' => 401,
-            ], 401);
-        }
-        $subscription = $user->planSubscription()->latest()->first(); 
-        if (!$subscription || $subscription->is_subscribed != 1) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'User is not subscribed.',
-                'code' => 403,
-            ], 403);
-        }
-        if ($subscription->available_days <= 0) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'No available days left for talktime.',
-                'code' => 400,
-            ], 400);
-        }
-        $latestTransaction = Transaction::where('user_id', $user->user_id)
-                                         ->where('status', '1')
-                                         ->latest() 
-                                         ->first();
-        if (!$latestTransaction) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'No valid transactions found.',
-                'code' => 404,
-            ], 404);
-        }
-        $talktimeAmount = $latestTransaction->amount;
-        return response()->json([
-            'status'  => 'success',
-            'message' => 'Talktime amount details retrieved successfully.',
-            'data'    => [
-                'user_id'         => $user->user_id, 
-                'talktime_amount' => $talktimeAmount,
-            ],
-            'code'    => 200,
-        ], 200);
-    }
-    
+
+  
+
 }

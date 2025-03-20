@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\AddAvatar;
+use App\Models\BannerImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Follow;
@@ -29,6 +31,59 @@ class UserController extends Controller
             ], 500);
         }
     }
+    public function show_avatar()
+{
+    try {
+        $avatars = AddAvatar::all(); // Fetch all avatars
+
+        $responseData = $avatars->map(function ($avatar) {
+            return [
+                'id'     => $avatar->id,
+                'avatar' => url($avatar->image),
+            ];
+        });
+
+        return response()->json([
+            'status'  => 'success',
+            'data'    => $responseData,
+            'message' => 'Avatars fetched successfully.',
+            'code'    => 200,
+        ], 200);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status'  => 'error',
+            'message' => 'Failed to fetch avatars.',
+            'code'    => 500,
+        ], 500);
+    }
+}
+public function banner()
+{
+    try {
+        $avatars = BannerImage::all(); // Fetch all avatars
+
+        $responseData = $avatars->map(function ($avatar) {
+            return [
+                'id'     => $avatar->id,
+                'banner_image' => url($avatar->banner_image),
+            ];
+        });
+
+        return response()->json([
+            'status'  => 'success',
+            'data'    => $responseData,
+            'message' => 'Avatars fetched successfully.',
+            'code'    => 200,
+        ], 200);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status'  => 'error',
+            'message' => 'Failed to fetch avatars.',
+            'code'    => 500,
+        ], 500);
+    }
+}
+
     
     public function user_unfollow(Request $request)
     {

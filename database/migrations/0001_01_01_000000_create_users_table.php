@@ -34,6 +34,7 @@ return new class extends Migration
             $table->string('type')->nullable();
             $table->boolean('is_subscriber')->default(0);
             $table->timestamp('subscribed_date')->nullable();
+            $table->timestamp('subscribed_end_date')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

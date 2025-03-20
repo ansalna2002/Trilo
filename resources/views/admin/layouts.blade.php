@@ -123,6 +123,24 @@
                         </a>
                     </li>
                     <li class="sidebar-item">
+                        <a href="{{ route('avatar') }}" class="sidebar-link">
+                            <img src="{{ asset('/assets') }}/images/icons/sidebar/users-light.svg"
+                                class="pe-2 sidebar-icon light-icon">
+                            <img src="{{ asset('/assets') }}/images/icons/sidebar/users-dark.svg"
+                                class="pe-2 sidebar-icon dark-icon">
+                            Add Avatar
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="{{ route('banner') }}" class="sidebar-link">
+                            <img src="{{ asset('/assets') }}/images/icons/sidebar/users-light.svg"
+                                class="pe-2 sidebar-icon light-icon">
+                            <img src="{{ asset('/assets') }}/images/icons/sidebar/users-dark.svg"
+                                class="pe-2 sidebar-icon dark-icon">
+                                Banner
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
                         <a href="{{ route('transaction') }}" class="sidebar-link">
                             <img src="{{ asset('/assets') }}/images/icons/sidebar/users-light.svg"
                                 class="pe-2 sidebar-icon light-icon">
@@ -149,7 +167,6 @@
                             Reset Password
                         </a>
                     </li>
-
                     <li class="sidebar-item">
                         <a type="button" data-bs-toggle="modal" data-bs-target="#LogoutModal" class="sidebar-link">
                             <img src="{{ asset('/assets') }}/images/icons/sidebar/logout-light.svg"
@@ -476,6 +493,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     @yield('footer')
+
+    
 </body>
 
 </html>

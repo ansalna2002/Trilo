@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\AddAvatar;
+use App\Models\BannerImage;
 use App\Models\Plan;
 use App\Models\Security;
 use App\Models\SecurityPrompt;
@@ -91,24 +93,24 @@ class DashboardController extends Controller
 
     public function plan_update(Request $request)
     {
-        $request->validate([
-            'plan'           => 'required|string|max:255',
-            'type'           => 'required|in:message,voice_call,video_call',
-            'talk_time'      => 'required|string|max:255',
+        $validator = Validator::make($request->all(), [
+            'coins'           => 'required|string|max:255',
             'amount'         => 'required|numeric|min:0',
-            'available_days' => 'required|integer|min:1',
         ]);
-        Plan::updateOrCreate(
-            ['plan' => $request->plan], 
-            [
-                'type'           => $request->type,
-                'talk_time'      => $request->talk_time,
-                'amount'         => $request->amount,
-                'available_days' => $request->available_days,
-            ]
-        );
-
-        return redirect()->back()->with('success', 'Plan details saved successfully!');
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+       
+        try {
+            $coins         = new Plan();
+            $coins->coins  = $request->input('coins');
+            $coins->amount = $request->input('amount');
+            $coins->save();
+    
+            return redirect()->back()->with('successmessage', 'Notification added successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred while adding the notification: ' . $e->getMessage())->withInput();
+        }
     }
     public function talktime_delete($id)
     {
@@ -182,6 +184,65 @@ public function update_prompt(Request $request, $id)
     } catch (\Exception $e) {
         return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
     }
+}
+
+public function add_avatar(Request $request)
+{
+$validator = Validator::make($request->all(), [
+   
+    'banner_img'  => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+]);
+if ($validator->fails()) {
+    return redirect()->back()->withErrors($validator)->withInput();
+}
+
+$imagePath = null;
+if ($request->hasFile('banner_img')) {
+    $file = $request->file('banner_img');
+    if (!$file->isValid()) {
+        return redirect()->back()->with('errormessage', 'File upload failed.');
+    }
+    $fileName        = time() . '_' . $file->getClientOriginalName();
+    $destinationPath = public_path('assets/images/banners');
+    $file->move($destinationPath, $fileName);
+    $imagePath       = 'assets/images/banners/' . $fileName;
+}
+
+$banner               = new AddAvatar();
+$banner->image = $imagePath;
+$banner->save();
+return redirect()->back()->with('successmessage', 'language added successfully.');
+}
+
+
+public function banner_post(Request $request)
+{
+    
+    $validator = Validator::make($request->all(), [
+        'banner_name' => 'required|string|max:255',
+        'banner_img'  => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+    ]);
+    if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+    }
+    
+    $imagePath = null;
+    if ($request->hasFile('banner_img')) {
+        $file = $request->file('banner_img');
+        if (!$file->isValid()) {
+            return redirect()->back()->with('errormessage', 'File upload failed.');
+        }
+        $fileName        = time() . '_' . $file->getClientOriginalName();
+        $destinationPath = public_path('assets/images/banners');
+        $file->move($destinationPath, $fileName);
+        $imagePath       = 'assets/images/banners/' . $fileName;
+    }
+
+    $banner               = new BannerImage();
+    $banner->banner_name  = $request->input('banner_name');
+    $banner->banner_image = $imagePath;
+    $banner->save();
+    return redirect()->back()->with('successmessage', 'Banner added successfully.');
 }
 
 

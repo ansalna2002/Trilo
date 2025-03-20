@@ -9,16 +9,11 @@ class PlanSubscription extends Model
     protected $fillable = [
         'user_id',
         'name',
-        'plan_id',
-        'plan_name',
+        'coins',
         'amount',
-        'type',
-        'available_days',
         'subscribed_date',
-        'talk_time',
         'status',
         'is_subscribed',
-        'remark'
     ];
 
     /**

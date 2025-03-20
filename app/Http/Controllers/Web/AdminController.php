@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\AddAvatar;
+use App\Models\BannerImage;
 use App\Models\Language;
 use App\Models\Plan;
 use App\Models\SecurityPrompt;
@@ -19,7 +21,11 @@ class AdminController extends Controller
         return view('admin.login');
     }
    
-
+    public function banner()
+    {
+        $banners = BannerImage::all();
+        return view('admin.banner', compact('banners'));
+    }
     public function security()
     {
         $datatable = SecurityPrompt::all();
@@ -68,8 +74,12 @@ class AdminController extends Controller
     {
         return view('admin.reset_password');
     }
-  
 
+ public function avatar()
+    {
+        $banners = AddAvatar::all();
+        return view('admin.add_avatar',compact('banners'));
+    }
     public function forget_password_reset($email="",$otp="")
     {
 

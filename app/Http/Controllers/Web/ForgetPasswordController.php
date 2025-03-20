@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Mail\ForgetPasswordMail;
+use App\Models\BannerImage;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -170,5 +171,17 @@ public function reset_password_update(Request $request)
     }
 }
 
+public function banner_delete($id)
+{
+    $banner = BannerImage::find($id);
+    if ($banner) {
 
+        if (file_exists(public_path('images/banner/' . $banner->banner_image))) {
+            unlink(public_path('images/banner/' . $banner->banner_image));
+        }
+        $banner->delete();
+        return redirect()->back()->with('successmessage', 'Banner deleted successfully.');
+    }
+    return redirect()->back()->with('error', 'Banner not found.');
+}
 }

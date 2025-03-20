@@ -4,11 +4,28 @@ use App\Http\Controllers\Web\AdminController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\ForgetPasswordController;
 use App\Http\Controllers\Web\LoginController;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/migrate', function () {
+    Artisan::call('migrate');
+});
+Route::get('/run-seeder', function () {
+    Artisan::call('db:seed');
+});
+Route::get('/clear-cache', function () {
+    Artisan::call('optimize');
+});
+Route::get('/clear-all-cache', function () {
+    Artisan::call('optimize:clear');
+});
+Route::get('/fresh-database', function () {
+    Artisan::call('migrate:fresh');
+});
 Route::get('/', function () {
     return view('welcome');
 });
+
 
 Route::prefix('admin')->group(function () {
 
@@ -68,6 +85,16 @@ Route::prefix('admin')->group(function () {
         Route::post('update_prompt/{id}', [DashboardController::class, 'update_prompt'])->name('update_prompt');
         Route::post('update_talktime/{id}', [DashboardController::class, 'update_talktime'])->name('update_talktime');
         Route::post('plan_update', [DashboardController::class, 'plan_update'])->name('plan_update');
+
+        Route::get('avatar', [AdminController::class, 'avatar'])->name('avatar');
+        Route::post('add_avatar', [DashboardController::class, 'add_avatar'])->name('add_avatar');
+       
+
+         //banner
+         Route::get('banner', [AdminController::class, 'banner'])->name('banner');
+         Route::post('banner_post', [DashboardController::class, 'banner_post'])->name('banner_post');
+         Route::get('banner_delete/{id}', [ForgetPasswordController::class, 'banner_delete'])->name('banner_delete');
+        
 
     });
 

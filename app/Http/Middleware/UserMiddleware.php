@@ -16,7 +16,6 @@ class UserMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-       Log::info('usermiddleware');
         if (!auth()->guard('sanctum')->check()) {
             return response()->json(['message' => 'You cannot access this page! Please login!'], 401);
         }
@@ -25,4 +24,5 @@ class UserMiddleware
         }
         return $next($request);
     }
+    
 }

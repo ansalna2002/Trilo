@@ -1,17 +1,36 @@
 <?php
 
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\BankController;
 use App\Http\Controllers\API\MessageController;
 use App\Http\Controllers\API\ProfileController;
 use App\Http\Controllers\API\SubscriptionController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
-route::get('/test_url',function(){
 
-return response()->json("hello");
+
+Route::get('/migrate', function () {
+  Artisan::call('migrate');
 });
+Route::get('/initial-run', function () {
+  Artisan::call('db:seed');
+});
+Route::get('/clear-cache', function () {
+  Artisan::call('optimize');
+});
+Route::get('/clear-all-cache', function () {
+  Artisan::call('optimize:clear');
+});
+Route::get('/fresh-database', function () {
+  Artisan::call('migrate:fresh');
+});
+Route::get('/', function () {
+  return view('welcome');
+});
+
 
 Route::middleware('apikey')->group(function () {
 
@@ -21,8 +40,8 @@ Route::middleware('apikey')->group(function () {
   //get_language
   Route::get('get_language', [ProfileController::class, 'get_language']);
   Route::get('get_voice_prompt', [SubscriptionController::class, 'get_voice_prompt']);
-   
-  Route::middleware('userauth')->group(function () {
+  Route::get('banner', [UserController::class, 'banner']);
+  Route::middleware(['userauth'])->group(function () {
     //set_profile
     Route::post('set_profile', [ProfileController::class, 'set_profile']);
     Route::post('set_profile_update', [ProfileController::class, 'set_profile_update']);
@@ -66,6 +85,8 @@ Route::middleware('apikey')->group(function () {
     Route::get('show_plan', [SubscriptionController::class, 'show_plan']);
     // active_plan
     Route::post('active_plan', [SubscriptionController::class, 'active_plan']);
+    Route::post('select_avatar', [ProfileController::class, 'select_avatar']);
+   
     // user_transaction
     Route::post('user_transaction', [SubscriptionController::class, 'user_transaction']);
     // select_language
@@ -76,7 +97,14 @@ Route::middleware('apikey')->group(function () {
     Route::get('get_user_transaction', [SubscriptionController::class, 'get_user_transaction']);
     // get_usertalktime_amount
     Route::get('get_usertalktime_amount', [SubscriptionController::class, 'get_usertalktime_amount']);
-    });
+    //addbank
+    Route::post('add_bank', [BankController::class, 'add_bank']);
+    // add_kyc
+    Route::post('add_kyc', [BankController::class, 'add_kyc']);
+    Route::get('show_avatar', [UserController::class, 'show_avatar']);
+  
+  
+  });
 
 });
 

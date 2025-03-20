@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('plans', function (Blueprint $table) {
+        Schema::create('add_banks', function (Blueprint $table) {
             $table->id();
             $table->string('user_id')->nullable();
-            $table->string('coins');
-            $table->decimal('amount', 8, 2); 
-            $table->boolean('status')->default(1);
+            $table->string('account_holder_name')->nullable();
+            $table->string('account_number')->nullable();
+            $table->string('ifsc_code')->nullable();
+            $table->string('bank_name')->nullable();
+            $table->string('pan_number')->nullable();
             $table->timestamps();
         });
     }
@@ -26,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('plans');
+        Schema::dropIfExists('add_banks');
     }
 };

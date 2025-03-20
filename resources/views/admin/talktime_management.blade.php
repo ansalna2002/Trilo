@@ -28,28 +28,9 @@
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="form-group mb-3">
-                                    <label for="plan" class="form-label">Plan</label>
-                                    <input type="text" name="plan" class="form-control" id="plan" value="{{ old('plan') }}" placeholder="Enter Plan">
-                                    @error('plan')
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="form-group mb-3">
-                                    <label for="type" class="form-label">Type</label>
-                                    <select name="type" class="form-control" id="type">
-                                        <option value="message" {{ old('type') == 'message' ? 'selected' : '' }}>Message</option>
-                                        <option value="voice_call" {{ old('type') == 'voice_call' ? 'selected' : '' }}>Voice Call</option>
-                                        <option value="video_call" {{ old('type') == 'video_call' ? 'selected' : '' }}>Video Call</option>
-                                    </select>
-                                    @error('type')
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                
-                                <div class="form-group mb-3">
-                                    <label for="talk_time" class="form-label">Talk Time</label>
-                                    <input type="text" name="talk_time" class="form-control" id="talk_time" value="{{ old('talk_time') }}" placeholder="Enter Talk Time">
-                                    @error('talk_time')
+                                    <label for="coins" class="form-label">Coins</label>
+                                    <input type="text" name="coins" class="form-control" id="coins" value="{{ old('coins') }}" placeholder="Enter Plan">
+                                    @error('coins')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -60,13 +41,7 @@
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                <div class="form-group mb-3">
-                                    <label for="available_days" class="form-label">Available Days</label>
-                                    <input type="number" name="available_days" class="form-control" id="available_days" value="{{ old('available_days') }}" placeholder="Enter Available Days">
-                                    @error('available_days')
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror
-                                </div>
+                               
                                 <div class="button-container mt-4">
                                     <button type="submit" class="btn btn-primary submit-btn"><i class="fa-regular fa-circle-check me-2"></i>Submit</button>
                                 </div>
@@ -92,11 +67,8 @@
                     <thead>
                         <tr>
                             <th>S/N</th>
-                            <th>PLAN </th>
-                            <th>PLAN TYPE </th>
-                            <th>TALK TIME</th>
+                            <th>Coins </th>
                             <th>AMOUNT </th>
-                            <th>AVAILABLE DAYS</th>
                             <th>STATUS</th>
                             <th>ACTION</th>
                         </tr>
@@ -104,30 +76,15 @@
                     <tbody>
                         @foreach ($datatable as $table)
                         <tr>
-      
                           <td>{{ $loop->iteration }}</td>
-                          <td>{{ $table->plan }}</td>
-                          <td>{{ $table->type }}</td>
-                          <td>{{ $table->talk_time }}</td>
+                          <td>{{ $table->coins }}</td>
                           <td>{{ $table->amount }}</td>
-                          <td>{{ $table->available_days }} days</td>
                           <td>
                             <span style="color: {{ $table->status == 1 ? 'green' : 'red' }};">
                                 {{ $table->status == 1 ? 'Active' : 'Inactive' }}
                             </span>
                         </td>
-                        {{-- <td>
-                            <!-- Edit Button -->
-                            <a href="{{ route('edit_talktime', ['id' => $table->id]) }}" class="btn btn-primary text-white me-2">
-                                <i class="fa-regular fa-pen-to-square me-2"></i>Edit
-                            </a>
                         
-                           <!-- Delete Button -->
-                           <button type="button" data-bs-toggle="modal" data-bs-target="#DeleteModal-{{ $table->id }}" class="btn btn-danger">
-                            <i class="fa-regular fa-trash-can me-2"></i>Delete
-                        </button>
-
-                        </td> --}}
                         <td>
                             <!-- Edit Emoji -->
                             <a href="{{ route('edit_talktime', ['id' => $table->id]) }}" class="text-primary me-2">

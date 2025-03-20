@@ -14,16 +14,11 @@ return new class extends Migration
         Schema::create('plan_subscriptions', function (Blueprint $table) {
             $table->id();
             $table->string('user_id');
-            $table->string('plan_id');
-            $table->string('plan_name');
+            $table->string('coins');
             $table->decimal('amount', 8, 2);
-            $table->integer('available_days');
             $table->date('subscribed_date');
             $table->boolean('status')->default(1);
             $table->boolean('is_subscribed')->default(0);
-            $table->text('remark')->nullable(); 
-            $table->string('talk_time')->nullable(); 
-            $table->string('type')->nullable();
             $table->timestamps();
         });
     }

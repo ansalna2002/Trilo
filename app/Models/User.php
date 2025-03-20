@@ -42,7 +42,8 @@ class User extends Authenticatable
         'last_login',
         'type',
         'is_subscriber',
-        'subscribed_date'
+        'subscribed_date',
+        'subscribed_end_date'
     ];
 
     /**

@@ -11,15 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transactions', function (Blueprint $table) {
+        Schema::create('banner_images', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
-            $table->string('user_id');
-            $table->string('number');
-            $table->string('coins'); 
-            $table->string('transaction_id');
-            $table->decimal('amount', 8, 2); 
-            $table->boolean('status')->default(0); 
+            $table->string('banner_name'); 
+            $table->string('banner_image'); 
+            $table->string('one')->nullable();
+            $table->string('two')->nullable();
+            $table->string('three')->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('transactions');
+        Schema::dropIfExists('banner_images');
     }
 };

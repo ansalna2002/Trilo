@@ -18,9 +18,7 @@ class ApiKeyMiddleware
     {
         
         $apiKey = $request->header('X-API-KEY');
-        Log::info($apiKey);
         $validApiKey = env('API_KEY'); 
-        Log::info('API_KEY');
         if ($apiKey && $apiKey === $validApiKey) {
             return $next($request);
         }

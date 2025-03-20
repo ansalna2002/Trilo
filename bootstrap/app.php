@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'api' => [
                 'key' => env('API_KEY', 'pefwufuifnuefnuifnufnqweufwoqfwiefjwefpqwoefwfwqfef'),
             ],
+            'autolog'=> \App\Http\Middleware\AutoLogoutMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
